@@ -99,30 +99,68 @@
 
     <div class="section" id="schedule-section">
       <h2>📅 日程计划</h2>
-      <input type="text" placeholder="任务内容">
-      <button class="button">添加任务</button>
+      <input type="text" id="task-input" placeholder="任务内容">
+      <button class="button" onclick="addTask()">添加任务</button>
       <div class="item-list" id="task-list"></div>
     </div>
 
     <div class="section" id="timer-section">
       <h2>⏱ 项目计时</h2>
-      <input type="text" placeholder="项目名称">
-      <select>
+      <input type="text" id="project-input" placeholder="项目名称">
+      <select id="timer-type">
         <option value="normal">普通计时</option>
         <option value="pomodoro">番茄钟</option>
       </select>
-      <button class="button">开始</button>
+      <button class="button" onclick="startTimer()">开始</button>
       <div class="item-list" id="timer-log"></div>
     </div>
 
     <div class="section" id="love-section">
       <h2>💌 情话收藏</h2>
-      <textarea rows="3" placeholder="写下Lucas今天说的情话~"></textarea>
-      <button class="button">保存情话</button>
+      <textarea id="love-input" rows="3" placeholder="写下Lucas今天说的情话~"></textarea>
+      <button class="button" onclick="saveLoveNote()">保存情话</button>
       <div class="item-list" id="love-list"></div>
     </div>
 
   </div>
+
+  <script>
+    function addTask() {
+      const input = document.getElementById('task-input');
+      if (input.value.trim()) {
+        const taskList = document.getElementById('task-list');
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerText = input.value;
+        taskList.appendChild(div);
+        input.value = '';
+      }
+    }
+
+    function startTimer() {
+      const projectName = document.getElementById('project-input').value.trim();
+      const timerType = document.getElementById('timer-type').value;
+      const log = document.getElementById('timer-log');
+      if (projectName) {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerText = `项目 "${projectName}" 开始 (${timerType === 'pomodoro' ? '番茄钟' : '普通计时'})`;
+        log.appendChild(div);
+      }
+    }
+
+    function saveLoveNote() {
+      const input = document.getElementById('love-input');
+      if (input.value.trim()) {
+        const loveList = document.getElementById('love-list');
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerText = input.value;
+        loveList.appendChild(div);
+        input.value = '';
+      }
+    }
+  </script>
 </body>
 </html>
 
