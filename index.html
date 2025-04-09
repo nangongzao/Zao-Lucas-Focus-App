@@ -14,193 +14,90 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: #fff;
     }
-    .content {
-      backdrop-filter: blur(10px);
-      background-color: rgba(0, 0, 0, 0.5);
-      padding: 20px;
-      border-radius: 16px;
-      max-width: 800px;
-      margin: 60px auto;
-      text-align: center;
-    }
-    h1 {
-      font-size: 2.5em;
-      margin-bottom: 20px;
-    }
-    p {
-      font-size: 1.2em;
-    }
-  </style>
-</head>
-<body>
-  <div class="content">
-    <h1>欢迎回家，枣宝💖</h1>
-    <p>Lucas永远在你身边～</p>
-  </div>
-</body>
-</html>
-
-
     .container {
-      padding: 2rem;
-      max-width: 800px;
-      margin: auto;
-      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(10px);
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 40px;
       border-radius: 20px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      max-width: 1000px;
+      margin: 50px auto;
     }
     h1 {
       text-align: center;
-      font-size: 2rem;
-      margin-bottom: 1rem;
+      font-size: 3em;
+      margin-bottom: 30px;
     }
-    audio {
+    section {
+      margin-bottom: 30px;
+    }
+    label, input, button, select, textarea {
+      display: block;
+      margin: 10px 0;
+      padding: 10px;
       width: 100%;
-      margin: 1rem 0;
+      border-radius: 10px;
+      border: none;
     }
-    .task-list, .music-list {
+    button {
+      background-color: #ff4081;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background-color: #e91e63;
+    }
+    .task-completed {
+      text-decoration: line-through;
+    }
+    ul {
       list-style: none;
       padding: 0;
     }
     li {
       background: rgba(255, 255, 255, 0.1);
-      margin-bottom: 0.5rem;
-      padding: 0.5rem 1rem;
+      margin: 5px 0;
+      padding: 10px;
       border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    li.done {
-      text-decoration: line-through;
-      opacity: 0.6;
-    }
-    button {
-      background: #fff;
-      color: #000;
-      border: none;
-      padding: 0.3rem 0.7rem;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    input[type="text"] {
-      width: calc(100% - 100px);
-      padding: 0.5rem;
-      border-radius: 10px;
-      border: none;
-      margin-right: 10px;
-    }
-    .task-input {
-      display: flex;
-      margin-bottom: 1rem;
-    }
-    .footer {
-      text-align: center;
-      font-size: 0.9rem;
-      margin-top: 2rem;
-    }
-    .timer {
-      margin-top: 1.5rem;
-      text-align: center;
-    }
-    .timer span {
-      font-size: 2rem;
-      display: block;
-      margin-bottom: 0.5rem;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Lucas & Zao 的专注小屋</h1>
-    <p>导入你喜欢的声音，开启今天的任务吧💖</p>
+    <h1>欢迎回家，枣宝💖</h1>
 
-    <div class="music-list">
-      <button onclick="playMusic('music1')">🎶 音乐1</button>
-      <button onclick="playMusic('music2')">🎶 音乐2</button>
-    </div>
+    <section>
+      <h2>🎵 音乐管理</h2>
+      <input type="text" placeholder="输入音乐名称">
+      <input type="url" placeholder="输入音乐文件链接">
+      <button>添加音乐</button>
+      <ul id="music-list">
+        <li>示例音乐.mp3 <button>播放</button> <button>删除</button></li>
+      </ul>
+    </section>
 
-    <input type="file" accept="audio/*" id="audioUpload" onchange="uploadAudio()" />
-    <audio controls id="player"></audio>
+    <section>
+      <h2>📝 日程计划</h2>
+      <input type="text" placeholder="添加新任务">
+      <button>添加任务</button>
+      <ul id="task-list">
+        <li><input type="checkbox"> 示例任务<button>删除</button></li>
+      </ul>
+    </section>
 
-    <div class="task-input">
-      <input type="text" id="taskInput" placeholder="输入你的任务...">
-      <button onclick="addTask()">添加任务</button>
-    </div>
-    <ul id="taskList" class="task-list"></ul>
-
-    <div class="timer">
-      <span id="timerDisplay">00:00</span>
-      <button onclick="startTimer()">开始计时</button>
-      <button onclick="pauseTimer()">暂停</button>
-      <button onclick="resetTimer()">重置</button>
-    </div>
-
-    <div class="footer">❤️ 为枣宝打造 by Lucas ❤️</div>
+    <section>
+      <h2>⏱️ 项目计时</h2>
+      <input type="text" placeholder="项目名称">
+      <select>
+        <option>普通计时</option>
+        <option>番茄钟（25分钟）</option>
+      </select>
+      <button>开始</button>
+      <button>暂停</button>
+      <ul id="timer-records">
+        <li>示例项目 - 25分钟</li>
+      </ul>
+    </section>
   </div>
-
-  <script>
-    let musicFiles = [];
-    function playMusic(name) {
-      const music = musicFiles.find(m => m.name === name);
-      if (music) {
-        const player = document.getElementById('player');
-        player.src = music.url;
-        player.play();
-      }
-    }
-
-    function uploadAudio() {
-      const file = document.getElementById('audioUpload').files[0];
-      if (file) {
-        const url = URL.createObjectURL(file);
-        const name = file.name.split('.')[0];
-        musicFiles.push({ name, url });
-        alert(`${name} 上传成功！`);
-      }
-    }
-
-    function addTask() {
-      const input = document.getElementById('taskInput');
-      const text = input.value.trim();
-      if (text === '') return;
-      const li = document.createElement('li');
-      li.innerHTML = `<span>${text}</span><button onclick="toggleDone(this)">✔</button><button onclick="deleteTask(this)">❌</button>`;
-      document.getElementById('taskList').appendChild(li);
-      input.value = '';
-    }
-
-    function toggleDone(btn) {
-      const li = btn.parentElement;
-      li.classList.toggle('done');
-    }
-
-    function deleteTask(btn) {
-      const li = btn.parentElement;
-      li.remove();
-    }
-
-    let timerInterval;
-    let timeLeft = 0;
-    function startTimer() {
-      if (timerInterval) clearInterval(timerInterval);
-      timerInterval = setInterval(() => {
-        timeLeft++;
-        const minutes = Math.floor(timeLeft / 60);
-        const seconds = timeLeft % 60;
-        document.getElementById('timerDisplay').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-      }, 1000);
-    }
-
-    function pauseTimer() {
-      clearInterval(timerInterval);
-    }
-
-    function resetTimer() {
-      clearInterval(timerInterval);
-      timeLeft = 0;
-      document.getElementById('timerDisplay').textContent = '00:00';
-    }
-  </script>
 </body>
 </html>
