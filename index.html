@@ -200,7 +200,7 @@
           </select>
         </div>
       </div>
-      <button class="button" onclick="openAddMusicPopup()">添加音乐</button>
+      <button class="button" onclick="openAddMusicPopup('music')">添加音乐</button>
     </div>
 
     <div class="section" id="noise-section">
@@ -218,7 +218,14 @@
             <option value="repeat">重复播放</option>
           </select>
         </div>
+        <div>
+          <label for="noise-song-select">选择歌曲：</label>
+          <select id="noise-song-select" class="song-select">
+            <option value="">请选择白噪音</option>
+          </select>
+        </div>
       </div>
+      <button class="button" onclick="openAddMusicPopup('noise')">添加白噪音</button>
     </div>
   </div>
 
@@ -238,13 +245,16 @@
     let loopControl = document.getElementById('loop-control');
     let songSelect = document.getElementById('song-select');
     let noiseLoopControl = document.getElementById('noise-loop-control');
+    let noiseSongSelect = document.getElementById('noise-song-select');
     let addMusicPopup = document.getElementById('add-music-popup');
     let fileInput = document.getElementById('file-input');
     let songListContainer = document.getElementById('song-list');
+    let currentPlayerType = 'music'; // 默认播放器为音乐播放器
 
     // 从 localStorage 加载已保存的歌曲
     window.onload = function() {
-      loadSongs();
+      loadSongs('music');
+      loadSongs('noise');
       const savedMusicSrc = localStorage.getItem('musicSrc');
       if (savedMusicSrc) {
         musicPlayer.src = savedMusicSrc;
@@ -266,70 +276,4 @@
       const savedNoiseLoop = localStorage.getItem('noiseLoop') || 'none';
       noiseLoopControl.value = savedNoiseLoop;
       noisePlayer.loop = savedNoiseLoop === 'loop';
-      noisePlayer.onended = savedNoiseLoop === 'repeat' ? () => noisePlayer.play() : null;
-    };
-
-    loopControl.addEventListener('change', () => {
-      musicPlayer.loop = loopControl.value === 'loop';
-      musicPlayer.onended = loopControl.value === 'repeat' ? () => musicPlayer.play() : null;
-      localStorage.setItem('musicLoop', loopControl.value);
-    });
-
-    noiseLoopControl.addEventListener('change', () => {
-      noisePlayer.loop = noiseLoopControl.value === 'loop';
-      noisePlayer.onended = noiseLoopControl.value === 'repeat' ? () => noisePlayer.play() : null;
-      localStorage.setItem('noiseLoop', noiseLoopControl.value);
-    });
-
-    function loadSongs() {
-      const songs = JSON.parse(localStorage.getItem('songs')) || [];
-      songSelect.innerHTML = '<option value="">请选择歌曲</option>';  // 清空原有选项
-      songs.forEach((song, index) => {
-        const option = document.createElement('option');
-        option.value = song.src;
-        option.textContent = song.name;
-        songSelect.appendChild(option);
-
-        const songItem = document.createElement('div');
-        songItem.classList.add('song-item');
-        songItem.innerHTML = `${song.name} <button onclick="removeSong(${index})">删除</button>`;
-        songListContainer.appendChild(songItem);
-      });
-    }
-
-    function openAddMusicPopup() {
-      addMusicPopup.classList.add('show');
-    }
-
-    function closeAddMusicPopup() {
-      addMusicPopup.classList.remove('show');
-    }
-
-    function addMusic() {
-      let file = fileInput.files[0];
-      if (file) {
-        let reader = new FileReader();
-        reader.onload = function(event) {
-          const songs = JSON.parse(localStorage.getItem('songs')) || [];
-          const song = {
-            name: file.name,
-            src: event.target.result
-          };
-          songs.push(song);
-          localStorage.setItem('songs', JSON.stringify(songs));
-          loadSongs();
-          closeAddMusicPopup();
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function removeSong(index) {
-      const songs = JSON.parse(localStorage.getItem('songs')) || [];
-      songs.splice(index, 1);
-      localStorage.setItem('songs', JSON.stringify(songs));
-      loadSongs();
-    }
-  </script>
-</body>
-</html>
+      noisePlayer.onended = savedNoiseLoop === 'repeat' ? () =>
