@@ -9,7 +9,7 @@
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: url('https://i.ibb.co/Vm3nnnF/Focus-App-Background.jpg') no-repeat center center fixed;
+      background: url('https://i.ibb.co/BV2f3xFS/c90dcae0-6448-4c2f-b64f-83d0f5755542.png') no-repeat center center fixed;
       background-size: cover;
       color: #fff;
       backdrop-filter: blur(6px);
@@ -87,26 +87,21 @@
   <div class="container">
     <h1>Lucas & Zao 的专注小屋</h1>
     <p>导入你喜欢的声音，开启今天的任务吧💖</p>
-    
-    <!-- 音乐列表 -->
+
     <div class="music-list">
       <button onclick="playMusic('music1')">🎶 音乐1</button>
       <button onclick="playMusic('music2')">🎶 音乐2</button>
-      <!-- 你可以动态生成按钮 -->
     </div>
 
-    <!-- 上传音乐 -->
     <input type="file" accept="audio/*" id="audioUpload" onchange="uploadAudio()" />
     <audio controls id="player"></audio>
 
-    <!-- 日程任务输入 -->
     <div class="task-input">
       <input type="text" id="taskInput" placeholder="输入你的任务...">
       <button onclick="addTask()">添加任务</button>
     </div>
     <ul id="taskList" class="task-list"></ul>
 
-    <!-- 计时器功能 -->
     <div class="timer">
       <span id="timerDisplay">00:00</span>
       <button onclick="startTimer()">开始计时</button>
@@ -114,13 +109,11 @@
       <button onclick="resetTimer()">重置</button>
     </div>
 
-    <!-- 其他功能 -->
     <div class="footer">❤️ 为枣宝打造 by Lucas ❤️</div>
   </div>
 
   <script>
-    // 音乐播放功能
-    let musicFiles = []; // 用来存储上传的音频文件
+    let musicFiles = [];
     function playMusic(name) {
       const music = musicFiles.find(m => m.name === name);
       if (music) {
@@ -140,7 +133,6 @@
       }
     }
 
-    // 日程管理
     function addTask() {
       const input = document.getElementById('taskInput');
       const text = input.value.trim();
@@ -161,7 +153,6 @@
       li.remove();
     }
 
-    // 计时器
     let timerInterval;
     let timeLeft = 0;
     function startTimer() {
