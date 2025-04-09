@@ -300,6 +300,28 @@
           option.textContent = song.name;
           selectElement.appendChild(option);
         });
+
+        // 显示已添加的歌曲
+        const songList = document.createElement('div');
+        songs.forEach((song, index) => {
+          const songItem = document.createElement('div');
+          songItem.classList.add('song-item');
+          songItem.innerHTML = `${song.name} <button onclick="deleteSong(${index}, '${playerType}')">删除</button>`;
+          songList.appendChild(songItem);
+        });
+        songListContainer.innerHTML = '';
+        songListContainer.appendChild(songList);
+      }
+    }
+
+    // 删除歌曲
+    function deleteSong(index, playerType) {
+      const savedSongs = localStorage.getItem(playerType + 'Songs');
+      if (savedSongs) {
+        let songs = JSON.parse(savedSongs);
+        songs.splice(index, 1);
+        localStorage.setItem(playerType + 'Songs', JSON.stringify(songs));
+        loadSongs(playerType);  // 重新加载歌曲列表
       }
     }
 
@@ -336,8 +358,6 @@
     loopControl.onchange = function() {
       if (loopControl.value === 'loop') {
         musicPlayer.loop = true;
-      } else if (loopControl.value === 'repeat') {
-        musicPlayer.loop = false;
       } else {
         musicPlayer.loop = false;
       }
@@ -345,8 +365,6 @@
 
     noiseLoopControl.onchange = function() {
       if (noiseLoopControl.value === 'loop') {
-        noisePlayer.loop = true;
-      } else if (noiseLoopControl.value === 'repeat') {
         noisePlayer.loop = true;
       } else {
         noisePlayer.loop = false;
