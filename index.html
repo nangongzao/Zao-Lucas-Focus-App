@@ -86,6 +86,7 @@
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
       width: 80%;
       z-index: 9999;
+      color: black;
     }
 
     .popup-container.show {
@@ -136,6 +137,41 @@
     .audio-player select {
       width: 100%;
     }
+
+    .song-select {
+      margin-top: 10px;
+      width: 100%;
+      padding: 8px;
+      font-size: 1em;
+      border-radius: 5px;
+      border: none;
+    }
+
+    .song-list {
+      margin-top: 10px;
+    }
+
+    .song-list .song-item {
+      background-color: #f0f0f0;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .song-list button {
+      background-color: red;
+      border: none;
+      color: white;
+      padding: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .song-list button:hover {
+      background-color: darkred;
+    }
   </style>
 </head>
 <body>
@@ -155,6 +191,12 @@
             <option value="none">无循环</option>
             <option value="loop">循环播放</option>
             <option value="repeat">重复播放</option>
+          </select>
+        </div>
+        <div>
+          <label for="song-select">选择歌曲：</label>
+          <select id="song-select" class="song-select">
+            <option value="">请选择歌曲</option>
           </select>
         </div>
       </div>
@@ -185,18 +227,24 @@
     <h2>添加音乐</h2>
     <input type="file" id="file-input" accept="audio/*">
     <button class="button" onclick="addMusic()">添加</button>
+    <div class="song-list" id="song-list">
+      <h3>已添加的歌曲：</h3>
+    </div>
   </div>
 
   <script>
     let musicPlayer = document.getElementById('music-player');
     let noisePlayer = document.getElementById('noise-player');
     let loopControl = document.getElementById('loop-control');
+    let songSelect = document.getElementById('song-select');
     let noiseLoopControl = document.getElementById('noise-loop-control');
     let addMusicPopup = document.getElementById('add-music-popup');
     let fileInput = document.getElementById('file-input');
+    let songListContainer = document.getElementById('song-list');
 
     // 从 localStorage 加载已保存的歌曲
     window.onload = function() {
+      loadSongs();
       const savedMusicSrc = localStorage.getItem('musicSrc');
       if (savedMusicSrc) {
         musicPlayer.src = savedMusicSrc;
@@ -233,6 +281,22 @@
       localStorage.setItem('noiseLoop', noiseLoopControl.value);
     });
 
+    function loadSongs() {
+      const songs = JSON.parse(localStorage.getItem('songs')) || [];
+      songSelect.innerHTML = '<option value="">请选择歌曲</option>';  // 清空原有选项
+      songs.forEach((song, index) => {
+        const option = document.createElement('option');
+        option.value = song.src;
+        option.textContent = song.name;
+        songSelect.appendChild(option);
+
+        const songItem = document.createElement('div');
+        songItem.classList.add('song-item');
+        songItem.innerHTML = `${song.name} <button onclick="removeSong(${index})">删除</button>`;
+        songListContainer.appendChild(songItem);
+      });
+    }
+
     function openAddMusicPopup() {
       addMusicPopup.classList.add('show');
     }
@@ -246,13 +310,25 @@
       if (file) {
         let reader = new FileReader();
         reader.onload = function(event) {
-          musicPlayer.src = event.target.result;
-          localStorage.setItem('musicSrc', event.target.result); // 保存歌曲路径
-          musicPlayer.play();
+          const songs = JSON.parse(localStorage.getItem('songs')) || [];
+          const song = {
+            name: file.name,
+            src: event.target.result
+          };
+          songs.push(song);
+          localStorage.setItem('songs', JSON.stringify(songs));
+          loadSongs();
+          closeAddMusicPopup();
         };
         reader.readAsDataURL(file);
-        closeAddMusicPopup();
       }
+    }
+
+    function removeSong(index) {
+      const songs = JSON.parse(localStorage.getItem('songs')) || [];
+      songs.splice(index, 1);
+      localStorage.setItem('songs', JSON.stringify(songs));
+      loadSongs();
     }
   </script>
 </body>
