@@ -16,7 +16,7 @@
     }
 
     .container {
-      background-color: rgba(0, 0, 0, 0.15);
+      background-color: rgba(0, 0, 0, 0.3);
       padding: 20px;
       margin: 30px auto;
       max-width: 800px;
@@ -74,17 +74,40 @@
       margin-bottom: 10px;
       border-radius: 10px;
     }
+
+    #audio-player {
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    #add-music-form {
+      display: none;
+      margin-top: 10px;
+    }
   </style>
+  <script>
+    function toggleAddMusicForm() {
+      const form = document.getElementById('add-music-form');
+      form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+  </script>
 </head>
 <body>
   <div class="container">
     <h1>枣和Lucas的专注世界</h1>
 
     <div class="section" id="music-section">
-      <h2>🎵 音乐管理</h2>
-      <input type="text" placeholder="音乐名称">
-      <input type="file" accept="audio/*">
-      <button class="button">添加音乐</button>
+      <h2>🎵 音乐播放器</h2>
+      <audio id="audio-player" controls loop>
+        <source src="" type="audio/mpeg">
+        你的浏览器不支持音频播放。
+      </audio>
+      <button class="button" onclick="toggleAddMusicForm()">添加音乐</button>
+      <div id="add-music-form">
+        <input type="text" placeholder="音乐名称">
+        <input type="file" accept="audio/*">
+        <button class="button">确认添加</button>
+      </div>
       <div class="item-list" id="music-list"></div>
     </div>
 
@@ -108,4 +131,3 @@
   </div>
 </body>
 </html>
-
