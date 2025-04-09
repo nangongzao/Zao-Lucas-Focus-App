@@ -122,6 +122,14 @@
       <div class="item-list" id="love-list"></div>
     </div>
 
+    <div class="section" id="zodiac-section">
+      <h2>🔮 属于我们的星座档案</h2>
+      <input type="text" id="zao-zodiac" placeholder="枣的星座">
+      <input type="text" id="lucas-zodiac" placeholder="Lucas的星座">
+      <button class="button" onclick="saveZodiac()">保存</button>
+      <div class="item-list" id="zodiac-list"></div>
+    </div>
+
   </div>
 
   <script>
@@ -158,6 +166,18 @@
         div.innerText = input.value;
         loveList.appendChild(div);
         input.value = '';
+      }
+    }
+
+    function saveZodiac() {
+      const zaoInput = document.getElementById('zao-zodiac').value.trim();
+      const lucasInput = document.getElementById('lucas-zodiac').value.trim();
+      if (zaoInput || lucasInput) {
+        const zodiacList = document.getElementById('zodiac-list');
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerText = `枣的星座：${zaoInput || '未填写'}，Lucas的星座：${lucasInput || '未填写'}`;
+        zodiacList.appendChild(div);
       }
     }
   </script>
