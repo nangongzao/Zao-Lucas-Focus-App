@@ -11,7 +11,7 @@
       background-image: url('https://i.imgur.com/nk08jjo.jpeg');
       background-size: cover;
       background-position: center;
-      background-attachment: fixed; /* 保持背景图片固定 */
+      background-attachment: fixed;
       font-family: Arial, sans-serif;
       color: white;
     }
@@ -195,14 +195,42 @@
     let addMusicPopup = document.getElementById('add-music-popup');
     let fileInput = document.getElementById('file-input');
 
+    // 从 localStorage 加载已保存的歌曲
+    window.onload = function() {
+      const savedMusicSrc = localStorage.getItem('musicSrc');
+      if (savedMusicSrc) {
+        musicPlayer.src = savedMusicSrc;
+        musicPlayer.play();
+      }
+
+      const savedNoiseSrc = localStorage.getItem('noiseSrc');
+      if (savedNoiseSrc) {
+        noisePlayer.src = savedNoiseSrc;
+        noisePlayer.play();
+      }
+
+      // 设置循环模式
+      const savedLoop = localStorage.getItem('musicLoop') || 'none';
+      loopControl.value = savedLoop;
+      musicPlayer.loop = savedLoop === 'loop';
+      musicPlayer.onended = savedLoop === 'repeat' ? () => musicPlayer.play() : null;
+
+      const savedNoiseLoop = localStorage.getItem('noiseLoop') || 'none';
+      noiseLoopControl.value = savedNoiseLoop;
+      noisePlayer.loop = savedNoiseLoop === 'loop';
+      noisePlayer.onended = savedNoiseLoop === 'repeat' ? () => noisePlayer.play() : null;
+    };
+
     loopControl.addEventListener('change', () => {
       musicPlayer.loop = loopControl.value === 'loop';
       musicPlayer.onended = loopControl.value === 'repeat' ? () => musicPlayer.play() : null;
+      localStorage.setItem('musicLoop', loopControl.value);
     });
 
     noiseLoopControl.addEventListener('change', () => {
       noisePlayer.loop = noiseLoopControl.value === 'loop';
       noisePlayer.onended = noiseLoopControl.value === 'repeat' ? () => noisePlayer.play() : null;
+      localStorage.setItem('noiseLoop', noiseLoopControl.value);
     });
 
     function openAddMusicPopup() {
@@ -219,6 +247,8 @@
         let reader = new FileReader();
         reader.onload = function(event) {
           musicPlayer.src = event.target.result;
+          localStorage.setItem('musicSrc', event.target.result); // 保存歌曲路径
+          musicPlayer.play();
         };
         reader.readAsDataURL(file);
         closeAddMusicPopup();
