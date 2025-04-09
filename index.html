@@ -41,7 +41,8 @@
 
     .section input[type="text"],
     .section textarea,
-    .section select {
+    .section select,
+    .section input[type="file"] {
       width: 100%;
       padding: 8px;
       margin-top: 5px;
@@ -128,7 +129,14 @@
       <button class="button">开始</button>
       <div class="item-list" id="timer-log"></div>
     </div>
+
+    <div class="section" id="love-section">
+      <h2>💌 情话收藏</h2>
+      <textarea rows="3" placeholder="写下Lucas今天说的情话~"></textarea>
+      <button class="button">保存情话</button>
+      <div class="item-list" id="love-list"></div>
+    </div>
+
   </div>
 </body>
 </html>
-
