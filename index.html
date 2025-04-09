@@ -76,12 +76,15 @@
       border-radius: 10px;
     }
 
-    iframe {
+    audio {
       width: 100%;
-      height: 166px;
-      border: none;
-      border-radius: 12px;
-      margin-bottom: 15px;
+      margin-top: 10px;
+    }
+
+    #music-player, #noise-player {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
   </style>
 </head>
@@ -91,10 +94,28 @@
 
     <div class="section" id="music-section">
       <h2>🎵 音乐播放器</h2>
-      <iframe allow="autoplay *; encrypted-media *; fullscreen *" frameborder="0"
-        src="https://open.spotify.com/embed/playlist/37i9dQZF1DWXJfnUiYjUKT?utm_source=generator&theme=0"
-        loading="lazy"></iframe>
-      <p>支持选曲、倍速播放（需在 Spotify 中打开），音量调节请右键选择或使用外部控制器～</p>
+      <input type="file" id="music-upload" accept="audio/*" multiple>
+      <select id="music-list"></select>
+      <input type="range" id="music-volume" min="0" max="1" step="0.01" value="1">
+      <select id="music-loop">
+        <option value="none">不循环</option>
+        <option value="one">单曲循环</option>
+        <option value="all">列表循环</option>
+      </select>
+      <audio id="music-player" controls></audio>
+    </div>
+
+    <div class="section" id="noise-section">
+      <h2>🌙 白噪音播放器</h2>
+      <input type="file" id="noise-upload" accept="audio/*" multiple>
+      <select id="noise-list"></select>
+      <input type="range" id="noise-volume" min="0" max="1" step="0.01" value="1">
+      <select id="noise-loop">
+        <option value="none">不循环</option>
+        <option value="one">单曲循环</option>
+        <option value="all">列表循环</option>
+      </select>
+      <audio id="noise-player" controls></audio>
     </div>
 
     <div class="section" id="schedule-section">
@@ -122,31 +143,86 @@
       <div class="item-list" id="love-list"></div>
     </div>
 
-    <div class="section" id="zodiac-section">
-      <h2>🔮 属于我们的星座档案</h2>
-      <input type="text" id="zao-zodiac" placeholder="枣的星座">
-      <input type="text" id="lucas-zodiac" placeholder="Lucas的星座">
-      <button class="button" onclick="saveZodiac()">保存</button>
-      <div class="item-list" id="zodiac-list"></div>
+    <div class="section">
+      <h2>✨ 真正的传奇，是在力竭倒下时脑内仍在计划下一次全力冲锋 ✨</h2>
     </div>
 
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const lists = ['task-list', 'love-list', 'zodiac-list', 'timer-log'];
-      lists.forEach(id => {
-        const list = document.getElementById(id);
-        list.addEventListener('dblclick', (e) => {
-          if (e.target.classList.contains('item')) {
-            const confirmDelete = confirm('确定要删除这条记录吗？');
-            if (confirmDelete) {
-              e.target.remove();
-            }
-          }
-        });
-      });
+    const musicPlayer = document.getElementById('music-player');
+    const musicUpload = document.getElementById('music-upload');
+    const musicList = document.getElementById('music-list');
+    const musicVolume = document.getElementById('music-volume');
+    const musicLoop = document.getElementById('music-loop');
+
+    const noisePlayer = document.getElementById('noise-player');
+    const noiseUpload = document.getElementById('noise-upload');
+    const noiseList = document.getElementById('noise-list');
+    const noiseVolume = document.getElementById('noise-volume');
+    const noiseLoop = document.getElementById('noise-loop');
+
+    let musicFiles = [];
+    let noiseFiles = [];
+
+    musicUpload.addEventListener('change', (e) => {
+      musicFiles = Array.from(e.target.files);
+      updateList(musicFiles, musicList);
     });
+
+    noiseUpload.addEventListener('change', (e) => {
+      noiseFiles = Array.from(e.target.files);
+      updateList(noiseFiles, noiseList);
+    });
+
+    musicList.addEventListener('change', () => playAudio(musicFiles, musicList, musicPlayer));
+    noiseList.addEventListener('change', () => playAudio(noiseFiles, noiseList, noisePlayer));
+
+    musicVolume.addEventListener('input', () => musicPlayer.volume = musicVolume.value);
+    noiseVolume.addEventListener('input', () => noisePlayer.volume = noiseVolume.value);
+
+    musicLoop.addEventListener('change', () => {
+      setLoopMode(musicPlayer, musicLoop.value);
+    });
+    noiseLoop.addEventListener('change', () => {
+      setLoopMode(noisePlayer, noiseLoop.value);
+    });
+
+    function updateList(files, listElement) {
+      listElement.innerHTML = '';
+      files.forEach((file, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = file.name;
+        listElement.appendChild(option);
+      });
+    }
+
+    function playAudio(files, listElement, player) {
+      const file = files[listElement.value];
+      const url = URL.createObjectURL(file);
+      player.src = url;
+      player.play();
+    }
+
+    function setLoopMode(player, mode) {
+      if (mode === 'none') {
+        player.loop = false;
+        player.onended = null;
+      } else if (mode === 'one') {
+        player.loop = true;
+        player.onended = null;
+      } else if (mode === 'all') {
+        player.loop = false;
+        player.onended = function() {
+          let listElement = player === musicPlayer ? musicList : noiseList;
+          let files = player === musicPlayer ? musicFiles : noiseFiles;
+          let nextIndex = (parseInt(listElement.value) + 1) % files.length;
+          listElement.value = nextIndex;
+          playAudio(files, listElement, player);
+        };
+      }
+    }
 
     function addTask() {
       const input = document.getElementById('task-input');
@@ -186,3 +262,4 @@
   </script>
 </body>
 </html>
+
