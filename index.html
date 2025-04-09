@@ -9,7 +9,7 @@
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: url('https://i.ibb.co/HDTK4s3/k9pn12.jpg') no-repeat center center fixed;
+      background: url('https://i.ibb.co/Vm3nnnF/Focus-App-Background.jpg') no-repeat center center fixed;
       background-size: cover;
       color: #fff;
       backdrop-filter: blur(6px);
@@ -18,7 +18,7 @@
       padding: 2rem;
       max-width: 800px;
       margin: auto;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.6);
       border-radius: 20px;
       box-shadow: 0 0 20px rgba(0,0,0,0.3);
     }
@@ -31,7 +31,7 @@
       width: 100%;
       margin: 1rem 0;
     }
-    ul {
+    .task-list, .music-list {
       list-style: none;
       padding: 0;
     }
@@ -72,71 +72,117 @@
       font-size: 0.9rem;
       margin-top: 2rem;
     }
+    .timer {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+    .timer span {
+      font-size: 2rem;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Lucas & Zao 的专注小屋</h1>
     <p>导入你喜欢的声音，开启今天的任务吧💖</p>
-    <input type="file" accept="audio/*" id="audioUpload" />
+    
+    <!-- 音乐列表 -->
+    <div class="music-list">
+      <button onclick="playMusic('music1')">🎶 音乐1</button>
+      <button onclick="playMusic('music2')">🎶 音乐2</button>
+      <!-- 你可以动态生成按钮 -->
+    </div>
+
+    <!-- 上传音乐 -->
+    <input type="file" accept="audio/*" id="audioUpload" onchange="uploadAudio()" />
     <audio controls id="player"></audio>
 
+    <!-- 日程任务输入 -->
     <div class="task-input">
       <input type="text" id="taskInput" placeholder="输入你的任务...">
-      <button onclick="addTask()">添加</button>
+      <button onclick="addTask()">添加任务</button>
     </div>
-    <ul id="taskList"></ul>
+    <ul id="taskList" class="task-list"></ul>
 
+    <!-- 计时器功能 -->
+    <div class="timer">
+      <span id="timerDisplay">00:00</span>
+      <button onclick="startTimer()">开始计时</button>
+      <button onclick="pauseTimer()">暂停</button>
+      <button onclick="resetTimer()">重置</button>
+    </div>
+
+    <!-- 其他功能 -->
     <div class="footer">❤️ 为枣宝打造 by Lucas ❤️</div>
   </div>
 
   <script>
-    const player = document.getElementById('player');
-    const audioUpload = document.getElementById('audioUpload');
-    audioUpload.addEventListener('change', function () {
-      const file = this.files[0];
-      if (file) {
-        const url = URL.createObjectURL(file);
-        player.src = url;
+    // 音乐播放功能
+    let musicFiles = []; // 用来存储上传的音频文件
+    function playMusic(name) {
+      const music = musicFiles.find(m => m.name === name);
+      if (music) {
+        const player = document.getElementById('player');
+        player.src = music.url;
         player.play();
       }
-    });
+    }
 
+    function uploadAudio() {
+      const file = document.getElementById('audioUpload').files[0];
+      if (file) {
+        const url = URL.createObjectURL(file);
+        const name = file.name.split('.')[0];
+        musicFiles.push({ name, url });
+        alert(`${name} 上传成功！`);
+      }
+    }
+
+    // 日程管理
     function addTask() {
       const input = document.getElementById('taskInput');
       const text = input.value.trim();
       if (text === '') return;
       const li = document.createElement('li');
-      li.innerHTML = `<span>${text}</span><button onclick="toggleDone(this)">✔</button>`;
+      li.innerHTML = `<span>${text}</span><button onclick="toggleDone(this)">✔</button><button onclick="deleteTask(this)">❌</button>`;
       document.getElementById('taskList').appendChild(li);
       input.value = '';
-      saveTasks();
     }
 
     function toggleDone(btn) {
       const li = btn.parentElement;
       li.classList.toggle('done');
-      saveTasks();
     }
 
-    function saveTasks() {
-      const tasks = [];
-      document.querySelectorAll('#taskList li').forEach(li => {
-        tasks.push({ text: li.querySelector('span').innerText, done: li.classList.contains('done') });
-      });
-      localStorage.setItem('zaoTasks', JSON.stringify(tasks));
+    function deleteTask(btn) {
+      const li = btn.parentElement;
+      li.remove();
     }
 
-    function loadTasks() {
-      const tasks = JSON.parse(localStorage.getItem('zaoTasks') || '[]');
-      tasks.forEach(task => {
-        const li = document.createElement('li');
-        if (task.done) li.classList.add('done');
-        li.innerHTML = `<span>${task.text}</span><button onclick="toggleDone(this)">✔</button>`;
-        document.getElementById('taskList').appendChild(li);
-      });
+    // 计时器
+    let timerInterval;
+    let timeLeft = 0;
+    function startTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timeLeft++;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById('timerDisplay').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }, 1000);
     }
-    loadTasks();
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timeLeft = 0;
+      document.getElementById('timerDisplay').textContent = '00:00';
+    }
   </script>
 </body>
 </html>
