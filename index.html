@@ -16,7 +16,7 @@
     }
 
     .container {
-      background-color: rgba(0, 0, 0, 0.3);
+      background-color: rgba(0, 0, 0, 0.40);
       padding: 20px;
       margin: 30px auto;
       max-width: 800px;
@@ -75,40 +75,82 @@
       border-radius: 10px;
     }
 
-    #audio-player {
+    .player {
       width: 100%;
-      margin-bottom: 15px;
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
     }
 
-    #add-music-form {
-      display: none;
-      margin-top: 10px;
+    .audio-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .audio-controls button {
+      background-color: #ffffff33;
+      border: none;
+      color: white;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+
+    .audio-controls select {
+      background-color: #ffffff33;
+      color: white;
+      padding: 8px;
+      border-radius: 5px;
+      border: none;
     }
   </style>
-  <script>
-    function toggleAddMusicForm() {
-      const form = document.getElementById('add-music-form');
-      form.style.display = form.style.display === 'none' ? 'block' : 'none';
-    }
-  </script>
 </head>
 <body>
   <div class="container">
     <h1>枣和Lucas的专注世界</h1>
 
     <div class="section" id="music-section">
-      <h2>🎵 音乐播放器</h2>
-      <audio id="audio-player" controls loop>
-        <source src="" type="audio/mpeg">
-        你的浏览器不支持音频播放。
-      </audio>
-      <button class="button" onclick="toggleAddMusicForm()">添加音乐</button>
-      <div id="add-music-form">
-        <input type="text" placeholder="音乐名称">
-        <input type="file" accept="audio/*">
-        <button class="button">确认添加</button>
+      <h2>🎵 音乐管理</h2>
+      <div class="player" id="music-player">
+        <audio id="music-audio" controls>
+          <source id="music-source" src="" type="audio/mp3">
+        </audio>
+        <div class="audio-controls">
+          <button id="play-button">播放</button>
+          <select id="loop-select">
+            <option value="none">无循环</option>
+            <option value="single">单曲循环</option>
+            <option value="list">列表循环</option>
+          </select>
+        </div>
       </div>
+      <input type="text" placeholder="音乐名称">
+      <input type="file" accept="audio/*">
+      <button class="button" id="add-music-button">添加音乐</button>
       <div class="item-list" id="music-list"></div>
+    </div>
+
+    <div class="section" id="ambient-music-section">
+      <h2>🌧 氛围音管理</h2>
+      <div class="player" id="ambient-music-player">
+        <audio id="ambient-music-audio" controls>
+          <source id="ambient-music-source" src="" type="audio/mp3">
+        </audio>
+        <div class="audio-controls">
+          <button id="ambient-play-button">播放</button>
+          <select id="ambient-loop-select">
+            <option value="none">无循环</option>
+            <option value="single">单曲循环</option>
+            <option value="list">列表循环</option>
+          </select>
+        </div>
+      </div>
+      <input type="text" placeholder="氛围音名称">
+      <input type="file" accept="audio/*">
+      <button class="button" id="add-ambient-music-button">添加氛围音</button>
+      <div class="item-list" id="ambient-music-list"></div>
     </div>
 
     <div class="section" id="schedule-section">
@@ -129,5 +171,103 @@
       <div class="item-list" id="timer-log"></div>
     </div>
   </div>
+
+  <script>
+    // 音乐播放器控制
+    let musicAudio = document.getElementById('music-audio');
+    let musicSource = document.getElementById('music-source');
+    let playButton = document.getElementById('play-button');
+    let loopSelect = document.getElementById('loop-select');
+
+    playButton.addEventListener('click', () => {
+      if (musicAudio.paused) {
+        musicAudio.play();
+        playButton.innerHTML = '暂停';
+      } else {
+        musicAudio.pause();
+        playButton.innerHTML = '播放';
+      }
+    });
+
+    loopSelect.addEventListener('change', () => {
+      if (loopSelect.value === 'single') {
+        musicAudio.loop = true;
+      } else if (loopSelect.value === 'list') {
+        musicAudio.loop = false;
+        // 可根据需要处理列表循环逻辑
+      } else {
+        musicAudio.loop = false;
+      }
+    });
+
+    // 添加音乐功能
+    let addMusicButton = document.getElementById('add-music-button');
+    addMusicButton.addEventListener('click', () => {
+      let musicFile = document.querySelector("#music-section input[type='file']").files[0];
+      let musicName = document.querySelector("#music-section input[type='text']").value;
+
+      if (musicFile && musicName) {
+        let musicItem = document.createElement('div');
+        musicItem.classList.add('item');
+        musicItem.textContent = musicName;
+        let musicURL = URL.createObjectURL(musicFile);
+        musicItem.addEventListener('click', () => {
+          musicSource.src = musicURL;
+          musicAudio.load();
+          musicAudio.play();
+          playButton.innerHTML = '暂停';
+        });
+        document.getElementById('music-list').appendChild(musicItem);
+      }
+    });
+
+    // 氛围音播放器控制
+    let ambientMusicAudio = document.getElementById('ambient-music-audio');
+    let ambientMusicSource = document.getElementById('ambient-music-source');
+    let ambientPlayButton = document.getElementById('ambient-play-button');
+    let ambientLoopSelect = document.getElementById('ambient-loop-select');
+
+    ambientPlayButton.addEventListener('click', () => {
+      if (ambientMusicAudio.paused) {
+        ambientMusicAudio.play();
+        ambientPlayButton.innerHTML = '暂停';
+      } else {
+        ambientMusicAudio.pause();
+        ambientPlayButton.innerHTML = '播放';
+      }
+    });
+
+    ambientLoopSelect.addEventListener('change', () => {
+      if (ambientLoopSelect.value === 'single') {
+        ambientMusicAudio.loop = true;
+      } else if (ambientLoopSelect.value === 'list') {
+        ambientMusicAudio.loop = false;
+        // 可根据需要处理列表循环逻辑
+      } else {
+        ambientMusicAudio.loop = false;
+      }
+    });
+
+    // 添加氛围音功能
+    let addAmbientMusicButton = document.getElementById('add-ambient-music-button');
+    addAmbientMusicButton.addEventListener('click', () => {
+      let ambientMusicFile = document.querySelector("#ambient-music-section input[type='file']").files[0];
+      let ambientMusicName = document.querySelector("#ambient-music-section input[type='text']").value;
+
+      if (ambientMusicFile && ambientMusicName) {
+        let ambientMusicItem = document.createElement('div');
+        ambientMusicItem.classList.add('item');
+        ambientMusicItem.textContent = ambientMusicName;
+        let ambientMusicURL = URL.createObjectURL(ambientMusicFile);
+        ambientMusicItem.addEventListener('click', () => {
+          ambientMusicSource.src = ambientMusicURL;
+          ambientMusicAudio.load();
+          ambientMusicAudio.play();
+          ambientPlayButton.innerHTML = '暂停';
+        });
+        document.getElementById('ambient-music-list').appendChild(ambientMusicItem);
+      }
+    });
+  </script>
 </body>
 </html>
