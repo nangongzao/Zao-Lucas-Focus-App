@@ -133,6 +133,21 @@
   </div>
 
   <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const lists = ['task-list', 'love-list', 'zodiac-list', 'timer-log'];
+      lists.forEach(id => {
+        const list = document.getElementById(id);
+        list.addEventListener('dblclick', (e) => {
+          if (e.target.classList.contains('item')) {
+            const confirmDelete = confirm('确定要删除这条记录吗？');
+            if (confirmDelete) {
+              e.target.remove();
+            }
+          }
+        });
+      });
+    });
+
     function addTask() {
       const input = document.getElementById('task-input');
       if (input.value.trim()) {
@@ -168,19 +183,6 @@
         input.value = '';
       }
     }
-
-    function saveZodiac() {
-      const zaoInput = document.getElementById('zao-zodiac').value.trim();
-      const lucasInput = document.getElementById('lucas-zodiac').value.trim();
-      if (zaoInput || lucasInput) {
-        const zodiacList = document.getElementById('zodiac-list');
-        const div = document.createElement('div');
-        div.className = 'item';
-        div.innerText = `枣的星座：${zaoInput || '未填写'}，Lucas的星座：${lucasInput || '未填写'}`;
-        zodiacList.appendChild(div);
-      }
-    }
   </script>
 </body>
 </html>
-
