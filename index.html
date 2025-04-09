@@ -1,103 +1,111 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>枣宝的私人基地</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>枣和Lucas的专注世界</title>
   <style>
-    html, body {
+    body {
       margin: 0;
       padding: 0;
-      height: 100%;
-      background: url('https://i.imgur.com/nk08jjo.jpeg') no-repeat center center fixed;
+      background-image: url('https://i.imgur.com/nk08jjo.jpeg');
       background-size: cover;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #fff;
+      background-position: center;
+      font-family: Arial, sans-serif;
+      color: white;
     }
+
     .container {
-      backdrop-filter: blur(10px);
-      background-color: rgba(0, 0, 0, 0.6);
-      padding: 40px;
+      background-color: rgba(0, 0, 0, 0.15);
+      padding: 20px;
+      margin: 30px auto;
+      max-width: 800px;
       border-radius: 20px;
-      max-width: 1000px;
-      margin: 50px auto;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     }
+
     h1 {
       text-align: center;
-      font-size: 3em;
+      font-size: 2em;
       margin-bottom: 30px;
     }
-    section {
+
+    .section {
       margin-bottom: 30px;
     }
-    label, input, button, select, textarea {
-      display: block;
-      margin: 10px 0;
-      padding: 10px;
+
+    .section h2 {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+    }
+
+    .section input[type="text"],
+    .section textarea,
+    .section select {
       width: 100%;
-      border-radius: 10px;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
       border: none;
     }
-    button {
-      background-color: #ff4081;
+
+    .button {
+      background-color: #ffffff33;
+      border: none;
       color: white;
+      padding: 10px 15px;
+      margin-top: 10px;
       cursor: pointer;
-      transition: 0.3s;
+      border-radius: 10px;
+      transition: background-color 0.3s;
     }
-    button:hover {
-      background-color: #e91e63;
+
+    .button:hover {
+      background-color: #ffffff66;
     }
-    .task-completed {
-      text-decoration: line-through;
+
+    .item-list {
+      margin-top: 10px;
     }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    li {
-      background: rgba(255, 255, 255, 0.1);
-      margin: 5px 0;
+
+    .item {
+      background-color: rgba(255, 255, 255, 0.1);
       padding: 10px;
+      margin-bottom: 10px;
       border-radius: 10px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>欢迎回家，枣宝💖</h1>
+    <h1>枣和Lucas的专注世界</h1>
 
-    <section>
+    <div class="section" id="music-section">
       <h2>🎵 音乐管理</h2>
-      <input type="text" placeholder="输入音乐名称">
-      <input type="url" placeholder="输入音乐文件链接">
-      <button>添加音乐</button>
-      <ul id="music-list">
-        <li>示例音乐.mp3 <button>播放</button> <button>删除</button></li>
-      </ul>
-    </section>
+      <input type="text" placeholder="音乐名称">
+      <input type="file" accept="audio/*">
+      <button class="button">添加音乐</button>
+      <div class="item-list" id="music-list"></div>
+    </div>
 
-    <section>
-      <h2>📝 日程计划</h2>
-      <input type="text" placeholder="添加新任务">
-      <button>添加任务</button>
-      <ul id="task-list">
-        <li><input type="checkbox"> 示例任务<button>删除</button></li>
-      </ul>
-    </section>
+    <div class="section" id="schedule-section">
+      <h2>📅 日程计划</h2>
+      <input type="text" placeholder="任务内容">
+      <button class="button">添加任务</button>
+      <div class="item-list" id="task-list"></div>
+    </div>
 
-    <section>
-      <h2>⏱️ 项目计时</h2>
+    <div class="section" id="timer-section">
+      <h2>⏱ 项目计时</h2>
       <input type="text" placeholder="项目名称">
       <select>
-        <option>普通计时</option>
-        <option>番茄钟（25分钟）</option>
+        <option value="normal">普通计时</option>
+        <option value="pomodoro">番茄钟</option>
       </select>
-      <button>开始</button>
-      <button>暂停</button>
-      <ul id="timer-records">
-        <li>示例项目 - 25分钟</li>
-      </ul>
-    </section>
+      <button class="button">开始</button>
+      <div class="item-list" id="timer-log"></div>
+    </div>
   </div>
 </body>
 </html>
+
