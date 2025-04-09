@@ -264,7 +264,7 @@
       loopControl.value = 'loop'; // 音乐播放器：列表循环
       noiseLoopControl.value = 'repeat'; // 白噪音播放器：单曲循环
 
-      // 自动播放第一个音乐和白噪音
+      // 自动选择并播放第一个音乐和白噪音
       autoPlayFirstSong('music');
       autoPlayFirstSong('noise');
     }
@@ -279,6 +279,10 @@
           const source = playerType === 'music' ? document.getElementById('music-source') : document.getElementById('noise-source');
           source.src = songs[0].src;
           player.play();
+
+          // 自动选择第一首歌
+          const selectElement = playerType === 'music' ? songSelect : noiseSongSelect;
+          selectElement.value = 0;
         }
       }
     }
