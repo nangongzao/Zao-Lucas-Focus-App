@@ -87,6 +87,7 @@
       width: 80%;
       z-index: 9999;
       color: black;
+      border: 1px solid silver;
     }
 
     .popup-container.show {
@@ -99,7 +100,7 @@
       padding: 8px;
       margin-top: 5px;
       border-radius: 5px;
-      border: none;
+      border: 1px solid #ccc;
     }
 
     .popup-container button {
@@ -255,25 +256,99 @@
     window.onload = function() {
       loadSongs('music');
       loadSongs('noise');
-      const savedMusicSrc = localStorage.getItem('musicSrc');
-      if (savedMusicSrc) {
-        musicPlayer.src = savedMusicSrc;
+    }
+
+    // 打开添加音乐窗口
+    function openAddMusicPopup(playerType) {
+      currentPlayerType = playerType;
+      addMusicPopup.classList.add('show');
+      songListContainer.innerHTML = ''; // 清空歌曲列表
+      const savedSongs = localStorage.getItem(playerType + 'Songs');
+      if (savedSongs) {
+        const songs = JSON.parse(savedSongs);
+        songs.forEach((song, index) => {
+          const songItem = document.createElement('div');
+          songItem.classList.add('song-item');
+          songItem.innerHTML = `
+            ${song.name}
+            <button onclick="deleteSong(${index}, '${playerType}')">删除</button>
+          `;
+          songListContainer.appendChild(songItem);
+        });
+      }
+    }
+
+    // 关闭添加音乐窗口
+    function closeAddMusicPopup() {
+      addMusicPopup.classList.remove('show');
+    }
+
+    // 添加音乐
+    function addMusic() {
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const song = {
+          name: file.name,
+          src: e.target.result
+        };
+
+        // 保存到对应播放器
+        let savedSongs = localStorage.getItem(currentPlayerType + 'Songs');
+        savedSongs = savedSongs ? JSON.parse(savedSongs) : [];
+        savedSongs.push(song);
+        localStorage.setItem(currentPlayerType + 'Songs', JSON.stringify(savedSongs));
+
+        loadSongs(currentPlayerType);
+        closeAddMusicPopup();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // 加载歌曲
+    function loadSongs(playerType) {
+      const savedSongs = localStorage.getItem(playerType + 'Songs');
+      const songSelectElement = playerType === 'music' ? songSelect : noiseSongSelect;
+      songSelectElement.innerHTML = '<option value="">请选择歌曲</option>'; // 清空现有选项
+
+      if (savedSongs) {
+        const songs = JSON.parse(savedSongs);
+        songs.forEach(song => {
+          const option = document.createElement('option');
+          option.value = song.src;
+          option.textContent = song.name;
+          songSelectElement.appendChild(option);
+        });
+      }
+    }
+
+    // 删除歌曲
+    function deleteSong(index, playerType) {
+      let savedSongs = localStorage.getItem(playerType + 'Songs');
+      savedSongs = savedSongs ? JSON.parse(savedSongs) : [];
+      savedSongs.splice(index, 1);
+      localStorage.setItem(playerType + 'Songs', JSON.stringify(savedSongs));
+      loadSongs(playerType);
+    }
+
+    // 播放选择的歌曲
+    songSelect.addEventListener('change', function() {
+      const selectedSong = songSelect.value;
+      if (selectedSong) {
+        musicPlayer.src = selectedSong;
         musicPlayer.play();
       }
+    });
 
-      const savedNoiseSrc = localStorage.getItem('noiseSrc');
-      if (savedNoiseSrc) {
-        noisePlayer.src = savedNoiseSrc;
+    noiseSongSelect.addEventListener('change', function() {
+      const selectedSong = noiseSongSelect.value;
+      if (selectedSong) {
+        noisePlayer.src = selectedSong;
         noisePlayer.play();
       }
-
-      // 设置循环模式
-      const savedLoop = localStorage.getItem('musicLoop') || 'none';
-      loopControl.value = savedLoop;
-      musicPlayer.loop = savedLoop === 'loop';
-      musicPlayer.onended = savedLoop === 'repeat' ? () => musicPlayer.play() : null;
-
-      const savedNoiseLoop = localStorage.getItem('noiseLoop') || 'none';
-      noiseLoopControl.value = savedNoiseLoop;
-      noisePlayer.loop = savedNoiseLoop === 'loop';
-      noisePlayer.onended = savedNoiseLoop === 'repeat' ? () =>
+    });
+  </script>
+</body>
+</html>
