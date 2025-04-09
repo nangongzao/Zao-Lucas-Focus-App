@@ -39,17 +39,6 @@
       margin-bottom: 10px;
     }
 
-    .section input[type="text"],
-    .section textarea,
-    .section select,
-    .section input[type="file"] {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border-radius: 5px;
-      border: none;
-    }
-
     .button {
       background-color: #ffffff33;
       border: none;
@@ -76,15 +65,76 @@
       border-radius: 10px;
     }
 
-    audio {
+    iframe {
       width: 100%;
-      margin-top: 10px;
+      height: 166px;
+      border: none;
+      border-radius: 12px;
+      margin-bottom: 15px;
     }
 
-    #music-player, #noise-player {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    .popup-container {
+      display: none;
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      width: 80%;
+      z-index: 9999;
+    }
+
+    .popup-container.show {
+      display: block;
+    }
+
+    .popup-container input[type="file"],
+    .popup-container input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    .popup-container button {
+      background-color: #ffffff33;
+      border: none;
+      color: black;
+      padding: 10px 15px;
+      margin-top: 10px;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+
+    .popup-container button:hover {
+      background-color: #ffffff66;
+    }
+
+    .close-popup {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 20px;
+      cursor: pointer;
+      color: black;
+    }
+
+    .audio-player {
+      margin-bottom: 20px;
+    }
+
+    .audio-player audio {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    .audio-player select,
+    .audio-player input[type="range"] {
+      width: 100%;
     }
   </style>
 </head>
@@ -94,172 +144,110 @@
 
     <div class="section" id="music-section">
       <h2>🎵 音乐播放器</h2>
-      <input type="file" id="music-upload" accept="audio/*" multiple>
-      <select id="music-list"></select>
-      <input type="range" id="music-volume" min="0" max="1" step="0.01" value="1">
-      <select id="music-loop">
-        <option value="none">不循环</option>
-        <option value="one">单曲循环</option>
-        <option value="all">列表循环</option>
-      </select>
-      <audio id="music-player" controls></audio>
+      <div class="audio-player">
+        <audio id="music-player" controls>
+          <source id="music-source" src="" type="audio/mp3">
+          您的浏览器不支持音频标签。
+        </audio>
+        <div>
+          <label for="volume-control">音量：</label>
+          <input type="range" id="volume-control" value="50" max="100">
+          <p>当前音量：<span id="volume-value">50</span>%</p>
+        </div>
+        <div>
+          <label for="loop-control">循环模式：</label>
+          <select id="loop-control">
+            <option value="none">无循环</option>
+            <option value="loop">循环播放</option>
+            <option value="repeat">重复播放</option>
+          </select>
+        </div>
+      </div>
+      <button class="button" onclick="openAddMusicPopup()">添加音乐</button>
     </div>
 
     <div class="section" id="noise-section">
       <h2>🌙 白噪音播放器</h2>
-      <input type="file" id="noise-upload" accept="audio/*" multiple>
-      <select id="noise-list"></select>
-      <input type="range" id="noise-volume" min="0" max="1" step="0.01" value="1">
-      <select id="noise-loop">
-        <option value="none">不循环</option>
-        <option value="one">单曲循环</option>
-        <option value="all">列表循环</option>
-      </select>
-      <audio id="noise-player" controls></audio>
+      <div class="audio-player">
+        <audio id="noise-player" controls>
+          <source id="noise-source" src="" type="audio/mp3">
+          您的浏览器不支持音频标签。
+        </audio>
+        <div>
+          <label for="noise-volume-control">音量：</label>
+          <input type="range" id="noise-volume-control" value="50" max="100">
+          <p>当前音量：<span id="noise-volume-value">50</span>%</p>
+        </div>
+        <div>
+          <label for="noise-loop-control">循环模式：</label>
+          <select id="noise-loop-control">
+            <option value="none">无循环</option>
+            <option value="loop">循环播放</option>
+            <option value="repeat">重复播放</option>
+          </select>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <div class="section" id="schedule-section">
-      <h2>📅 日程计划</h2>
-      <input type="text" id="task-input" placeholder="任务内容">
-      <button class="button" onclick="addTask()">添加任务</button>
-      <div class="item-list" id="task-list"></div>
-    </div>
-
-    <div class="section" id="timer-section">
-      <h2>⏱ 项目计时</h2>
-      <input type="text" id="project-input" placeholder="项目名称">
-      <select id="timer-type">
-        <option value="normal">普通计时</option>
-        <option value="pomodoro">番茄钟</option>
-      </select>
-      <button class="button" onclick="startTimer()">开始</button>
-      <div class="item-list" id="timer-log"></div>
-    </div>
-
-    <div class="section" id="love-section">
-      <h2>💌 情话收藏</h2>
-      <textarea id="love-input" rows="3" placeholder="写下Lucas今天说的情话~"></textarea>
-      <button class="button" onclick="saveLoveNote()">保存情话</button>
-      <div class="item-list" id="love-list"></div>
-    </div>
-
-    <div class="section">
-      <h2>✨ 真正的传奇，是在力竭倒下时脑内仍在计划下一次全力冲锋 ✨</h2>
-    </div>
-
+  <div class="popup-container" id="add-music-popup">
+    <div class="close-popup" onclick="closeAddMusicPopup()">X</div>
+    <h2>添加音乐</h2>
+    <input type="file" id="file-input" accept="audio/*">
+    <button class="button" onclick="addMusic()">添加</button>
   </div>
 
   <script>
-    const musicPlayer = document.getElementById('music-player');
-    const musicUpload = document.getElementById('music-upload');
-    const musicList = document.getElementById('music-list');
-    const musicVolume = document.getElementById('music-volume');
-    const musicLoop = document.getElementById('music-loop');
+    let musicPlayer = document.getElementById('music-player');
+    let noisePlayer = document.getElementById('noise-player');
+    let volumeControl = document.getElementById('volume-control');
+    let volumeValue = document.getElementById('volume-value');
+    let loopControl = document.getElementById('loop-control');
+    let noiseVolumeControl = document.getElementById('noise-volume-control');
+    let noiseVolumeValue = document.getElementById('noise-volume-value');
+    let noiseLoopControl = document.getElementById('noise-loop-control');
+    let addMusicPopup = document.getElementById('add-music-popup');
+    let fileInput = document.getElementById('file-input');
 
-    const noisePlayer = document.getElementById('noise-player');
-    const noiseUpload = document.getElementById('noise-upload');
-    const noiseList = document.getElementById('noise-list');
-    const noiseVolume = document.getElementById('noise-volume');
-    const noiseLoop = document.getElementById('noise-loop');
-
-    let musicFiles = [];
-    let noiseFiles = [];
-
-    musicUpload.addEventListener('change', (e) => {
-      musicFiles = Array.from(e.target.files);
-      updateList(musicFiles, musicList);
+    volumeControl.addEventListener('input', () => {
+      musicPlayer.volume = volumeControl.value / 100;
+      volumeValue.innerText = volumeControl.value;
     });
 
-    noiseUpload.addEventListener('change', (e) => {
-      noiseFiles = Array.from(e.target.files);
-      updateList(noiseFiles, noiseList);
+    noiseVolumeControl.addEventListener('input', () => {
+      noisePlayer.volume = noiseVolumeControl.value / 100;
+      noiseVolumeValue.innerText = noiseVolumeControl.value;
     });
 
-    musicList.addEventListener('change', () => playAudio(musicFiles, musicList, musicPlayer));
-    noiseList.addEventListener('change', () => playAudio(noiseFiles, noiseList, noisePlayer));
-
-    musicVolume.addEventListener('input', () => musicPlayer.volume = musicVolume.value);
-    noiseVolume.addEventListener('input', () => noisePlayer.volume = noiseVolume.value);
-
-    musicLoop.addEventListener('change', () => {
-      setLoopMode(musicPlayer, musicLoop.value);
-    });
-    noiseLoop.addEventListener('change', () => {
-      setLoopMode(noisePlayer, noiseLoop.value);
+    loopControl.addEventListener('change', () => {
+      musicPlayer.loop = loopControl.value === 'loop';
+      musicPlayer.onended = loopControl.value === 'repeat' ? () => musicPlayer.play() : null;
     });
 
-    function updateList(files, listElement) {
-      listElement.innerHTML = '';
-      files.forEach((file, index) => {
-        const option = document.createElement('option');
-        option.value = index;
-        option.textContent = file.name;
-        listElement.appendChild(option);
-      });
+    noiseLoopControl.addEventListener('change', () => {
+      noisePlayer.loop = noiseLoopControl.value === 'loop';
+      noisePlayer.onended = noiseLoopControl.value === 'repeat' ? () => noisePlayer.play() : null;
+    });
+
+    function openAddMusicPopup() {
+      addMusicPopup.classList.add('show');
     }
 
-    function playAudio(files, listElement, player) {
-      const file = files[listElement.value];
-      const url = URL.createObjectURL(file);
-      player.src = url;
-      player.play();
+    function closeAddMusicPopup() {
+      addMusicPopup.classList.remove('show');
     }
 
-    function setLoopMode(player, mode) {
-      if (mode === 'none') {
-        player.loop = false;
-        player.onended = null;
-      } else if (mode === 'one') {
-        player.loop = true;
-        player.onended = null;
-      } else if (mode === 'all') {
-        player.loop = false;
-        player.onended = function() {
-          let listElement = player === musicPlayer ? musicList : noiseList;
-          let files = player === musicPlayer ? musicFiles : noiseFiles;
-          let nextIndex = (parseInt(listElement.value) + 1) % files.length;
-          listElement.value = nextIndex;
-          playAudio(files, listElement, player);
+    function addMusic() {
+      let file = fileInput.files[0];
+      if (file) {
+        let reader = new FileReader();
+        reader.onload = function(event) {
+          musicPlayer.src = event.target.result;
         };
-      }
-    }
-
-    function addTask() {
-      const input = document.getElementById('task-input');
-      if (input.value.trim()) {
-        const taskList = document.getElementById('task-list');
-        const div = document.createElement('div');
-        div.className = 'item';
-        div.innerText = input.value;
-        taskList.appendChild(div);
-        input.value = '';
-      }
-    }
-
-    function startTimer() {
-      const projectName = document.getElementById('project-input').value.trim();
-      const timerType = document.getElementById('timer-type').value;
-      const log = document.getElementById('timer-log');
-      if (projectName) {
-        const div = document.createElement('div');
-        div.className = 'item';
-        div.innerText = `项目 "${projectName}" 开始 (${timerType === 'pomodoro' ? '番茄钟' : '普通计时'})`;
-        log.appendChild(div);
-      }
-    }
-
-    function saveLoveNote() {
-      const input = document.getElementById('love-input');
-      if (input.value.trim()) {
-        const loveList = document.getElementById('love-list');
-        const div = document.createElement('div');
-        div.className = 'item';
-        div.innerText = input.value;
-        loveList.appendChild(div);
-        input.value = '';
+        reader.readAsDataURL(file);
+        closeAddMusicPopup();
       }
     }
   </script>
 </body>
 </html>
-
