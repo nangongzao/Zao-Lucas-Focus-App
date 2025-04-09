@@ -11,6 +11,7 @@
       background-image: url('https://i.imgur.com/nk08jjo.jpeg');
       background-size: cover;
       background-position: center;
+      background-attachment: fixed; /* 保持背景图片固定 */
       font-family: Arial, sans-serif;
       color: white;
     }
@@ -132,8 +133,7 @@
       border-radius: 10px;
     }
 
-    .audio-player select,
-    .audio-player input[type="range"] {
+    .audio-player select {
       width: 100%;
     }
   </style>
@@ -149,11 +149,6 @@
           <source id="music-source" src="" type="audio/mp3">
           您的浏览器不支持音频标签。
         </audio>
-        <div>
-          <label for="volume-control">音量：</label>
-          <input type="range" id="volume-control" value="50" max="100">
-          <p>当前音量：<span id="volume-value">50</span>%</p>
-        </div>
         <div>
           <label for="loop-control">循环模式：</label>
           <select id="loop-control">
@@ -173,11 +168,6 @@
           <source id="noise-source" src="" type="audio/mp3">
           您的浏览器不支持音频标签。
         </audio>
-        <div>
-          <label for="noise-volume-control">音量：</label>
-          <input type="range" id="noise-volume-control" value="50" max="100">
-          <p>当前音量：<span id="noise-volume-value">50</span>%</p>
-        </div>
         <div>
           <label for="noise-loop-control">循环模式：</label>
           <select id="noise-loop-control">
@@ -200,24 +190,10 @@
   <script>
     let musicPlayer = document.getElementById('music-player');
     let noisePlayer = document.getElementById('noise-player');
-    let volumeControl = document.getElementById('volume-control');
-    let volumeValue = document.getElementById('volume-value');
     let loopControl = document.getElementById('loop-control');
-    let noiseVolumeControl = document.getElementById('noise-volume-control');
-    let noiseVolumeValue = document.getElementById('noise-volume-value');
     let noiseLoopControl = document.getElementById('noise-loop-control');
     let addMusicPopup = document.getElementById('add-music-popup');
     let fileInput = document.getElementById('file-input');
-
-    volumeControl.addEventListener('input', () => {
-      musicPlayer.volume = volumeControl.value / 100;
-      volumeValue.innerText = volumeControl.value;
-    });
-
-    noiseVolumeControl.addEventListener('input', () => {
-      noisePlayer.volume = noiseVolumeControl.value / 100;
-      noiseVolumeValue.innerText = noiseVolumeControl.value;
-    });
 
     loopControl.addEventListener('change', () => {
       musicPlayer.loop = loopControl.value === 'loop';
