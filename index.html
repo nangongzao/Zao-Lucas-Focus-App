@@ -300,7 +300,7 @@
 
           const songItem = document.createElement('div');
           songItem.classList.add('song-item');
-          songItem.innerHTML = ${song.name} <button onclick="deleteSong(${index}, '${playerType}')">删除</button>;
+          songItem.innerHTML = `${song.name} <button onclick="deleteSong(${index}, '${playerType}')">删除</button>`;
           if (playerType === 'music') {
             songList.appendChild(songItem);
           }
