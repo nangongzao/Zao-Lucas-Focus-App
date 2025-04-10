@@ -14,6 +14,7 @@
       background-attachment: fixed;
       font-family: Arial, sans-serif;
       color: white;
+      overflow: hidden;
     }
 
     .container {
@@ -173,9 +174,38 @@
     .song-list button:hover {
       background-color: darkred;
     }
+
+    /* 雨幕效果 */
+    .raindrop {
+      position: absolute;
+      top: -10px;
+      width: 2px;
+      height: 10px;
+      background-color: rgba(255, 255, 255, 0.6);
+      animation: fall 1s infinite linear;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(100vh);
+      }
+    }
+
+    .raindrops-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
   </style>
 </head>
 <body>
+  <!-- 雨幕容器 -->
+  <div class="raindrops-container" id="raindrops-container"></div>
+
   <div class="container">
     <h1>枣和Lucas的专注世界</h1>
 
@@ -255,6 +285,7 @@
     window.onload = function () {
       loadSongs('music');
       loadSongs('noise');
+      createRainEffect();
 
       musicPlayer.volume = 0.4;
       noisePlayer.volume = 0.6;
@@ -266,106 +297,105 @@
       autoPlayFirstSong('noise');
     }
 
+    // 创建雨幕效果
+    function createRainEffect() {
+      let raindropsContainer = document.getElementById('raindrops-container');
+      for (let i = 0; i < 100; i++) {
+        let raindrop = document.createElement('div');
+        raindrop.classList.add('raindrop');
+        raindrop.style.left = `${Math.random() * 100}vw`;
+        raindrop.style.animationDuration = `${Math.random() * 2 + 2}s`;
+        raindropsContainer.appendChild(raindrop);
+      }
+    }
+
     function autoPlayFirstSong(playerType) {
       const savedSongs = localStorage.getItem(playerType + 'Songs');
       if (savedSongs) {
         const songs = JSON.parse(savedSongs);
         if (songs.length > 0) {
           const player = playerType === 'music' ? musicPlayer : noisePlayer;
+          const song = songs[0];
           const source = playerType === 'music' ? document.getElementById('music-source') : document.getElementById('noise-source');
-          source.src = songs[0].src;
+          source.src = song.url;
           player.load();
           player.play();
-
-          const selectElement = playerType === 'music' ? songSelect : noiseSongSelect;
-          selectElement.value = 0;
         }
       }
     }
 
+    // 更新歌曲列表
     function loadSongs(playerType) {
       const savedSongs = localStorage.getItem(playerType + 'Songs');
-      const selectElement = playerType === 'music' ? songSelect : noiseSongSelect;
-      const songList = songListContainer;
+      const songSelectElement = playerType === 'music' ? songSelect : noiseSongSelect;
+      const songListElement = playerType === 'music' ? document.getElementById('song-list') : null;
       if (savedSongs) {
         const songs = JSON.parse(savedSongs);
-        selectElement.innerHTML = '';
-        songList.innerHTML = '';
-        songs.forEach((song, index) => {
-          const option = document.createElement('option');
-          option.textContent = song.name;
-          option.value = index;
-          selectElement.appendChild(option);
-
-          const songItem = document.createElement('div');
-          songItem.classList.add('song-item');
-          songItem.innerHTML = `<span>${song.name}</span> <button onclick="deleteSong(${index}, '${playerType}')">删除</button>`;
-          songList.appendChild(songItem);
+        songs.forEach(song => {
+          let option = document.createElement('option');
+          option.value = song.url;
+          option.innerText = song.name;
+          songSelectElement.appendChild(option);
+          
+          if (songListElement) {
+            let songItem = document.createElement('div');
+            songItem.classList.add('song-item');
+            songItem.innerHTML = `
+              <span>${song.name}</span>
+              <button onclick="removeSong('${song.url}', '${playerType}')">删除</button>
+            `;
+            songListElement.appendChild(songItem);
+          }
         });
       }
     }
 
-    function openAddMusicPopup(playerType) {
-      currentPlayerType = playerType;
-      addMusicPopup.classList.add('show');
-    }
-
-    function closeAddMusicPopup() {
-      addMusicPopup.classList.remove('show');
-    }
-
+    // 添加歌曲
     function addMusic() {
       const file = fileInput.files[0];
-      if (!file) return alert('请选择一个音频文件');
+      if (!file) return alert('请上传音乐文件');
+
       const reader = new FileReader();
       reader.onload = function (e) {
-        const songs = JSON.parse(localStorage.getItem(currentPlayerType + 'Songs') || '[]');
-        const song = {
-          name: file.name,
-          src: e.target.result
-        };
-        songs.push(song);
-        localStorage.setItem(currentPlayerType + 'Songs', JSON.stringify(songs));
-
+        const url = e.target.result;
+        const songName = file.name;
+        const song = { name: songName, url: url };
+        addSongToLocalStorage(song, currentPlayerType);
         loadSongs(currentPlayerType);
         closeAddMusicPopup();
       };
       reader.readAsDataURL(file);
     }
 
-    function deleteSong(index, playerType) {
-      const songs = JSON.parse(localStorage.getItem(playerType + 'Songs'));
-      songs.splice(index, 1);
-      localStorage.setItem(playerType + 'Songs', JSON.stringify(songs));
-
-      loadSongs(playerType);
+    // 添加歌曲到本地存储
+    function addSongToLocalStorage(song, playerType) {
+      let savedSongs = localStorage.getItem(playerType + 'Songs');
+      savedSongs = savedSongs ? JSON.parse(savedSongs) : [];
+      savedSongs.push(song);
+      localStorage.setItem(playerType + 'Songs', JSON.stringify(savedSongs));
     }
 
-    songSelect.addEventListener('change', function (e) {
-      const index = e.target.value;
-      const savedSongs = JSON.parse(localStorage.getItem('musicSongs'));
-      const song = savedSongs[index];
-      musicPlayer.src = song.src;
-      musicPlayer.load();
-      musicPlayer.play();
-    });
+    // 删除歌曲
+    function removeSong(songUrl, playerType) {
+      let savedSongs = localStorage.getItem(playerType + 'Songs');
+      if (savedSongs) {
+        savedSongs = JSON.parse(savedSongs);
+        savedSongs = savedSongs.filter(song => song.url !== songUrl);
+        localStorage.setItem(playerType + 'Songs', JSON.stringify(savedSongs));
+        loadSongs(playerType);
+      }
+    }
 
-    noiseSongSelect.addEventListener('change', function (e) {
-      const index = e.target.value;
-      const savedSongs = JSON.parse(localStorage.getItem('noiseSongs'));
-      const song = savedSongs[index];
-      noisePlayer.src = song.src;
-      noisePlayer.load();
-      noisePlayer.play();
-    });
+    // 打开添加音乐的弹窗
+    function openAddMusicPopup(playerType) {
+      currentPlayerType = playerType;
+      addMusicPopup.classList.add('show');
+    }
 
-    loopControl.addEventListener('change', function (e) {
-      musicPlayer.loop = e.target.value === 'loop';
-    });
-
-    noiseLoopControl.addEventListener('change', function (e) {
-      noisePlayer.loop = e.target.value === 'repeat';
-    });
+    // 关闭添加音乐的弹窗
+    function closeAddMusicPopup() {
+      addMusicPopup.classList.remove('show');
+    }
   </script>
 </body>
 </html>
