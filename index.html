@@ -17,7 +17,7 @@
       color: white;
     }
 
-   .container {
+    .container {
       background-color: rgba(0, 0, 0, 0.3);
       padding: 20px;
       margin: 30px auto;
@@ -32,16 +32,16 @@
       margin-bottom: 30px;
     }
 
-   .section {
+    .section {
       margin-bottom: 30px;
     }
 
-   .section h2 {
+    .section h2 {
       font-size: 1.5em;
       margin-bottom: 10px;
     }
 
-   .button {
+    .button {
       background-color: #ffffff33;
       border: none;
       color: white;
@@ -52,15 +52,15 @@
       transition: background-color 0.3s;
     }
 
-   .button:hover {
+    .button:hover {
       background-color: #ffffff66;
     }
 
-   .item-list {
+    .item-list {
       margin-top: 10px;
     }
 
-   .item {
+    .item {
       background-color: rgba(255, 255, 255, 0.1);
       padding: 10px;
       margin-bottom: 10px;
@@ -75,7 +75,7 @@
       margin-bottom: 15px;
     }
 
-   .popup-container {
+    .popup-container {
       display: none;
       position: fixed;
       top: 20%;
@@ -91,12 +91,12 @@
       border: 1px solid silver;
     }
 
-   .popup-container.show {
+    .popup-container.show {
       display: block;
     }
 
-   .popup-container input[type="file"],
-   .popup-container input[type="text"] {
+    .popup-container input[type="file"],
+    .popup-container input[type="text"] {
       width: 100%;
       padding: 8px;
       margin-top: 5px;
@@ -104,7 +104,7 @@
       border: 1px solid #ccc;
     }
 
-   .popup-container button {
+    .popup-container button {
       background-color: #ffffff33;
       border: none;
       color: black;
@@ -114,11 +114,11 @@
       border-radius: 10px;
     }
 
-   .popup-container button:hover {
+    .popup-container button:hover {
       background-color: #ffffff66;
     }
 
-   .close-popup {
+    .close-popup {
       position: absolute;
       top: 10px;
       right: 10px;
@@ -127,20 +127,20 @@
       color: black;
     }
 
-   .audio-player {
+    .audio-player {
       margin-bottom: 20px;
     }
 
-   .audio-player audio {
+    .audio-player audio {
       width: 100%;
       border-radius: 10px;
     }
 
-   .audio-player select {
+    .audio-player select {
       width: 100%;
     }
 
-   .song-select {
+    .song-select {
       margin-top: 10px;
       width: 100%;
       padding: 8px;
@@ -149,11 +149,11 @@
       border: none;
     }
 
-   .song-list {
+    .song-list {
       margin-top: 10px;
     }
 
-   .song-list.song-item {
+    .song-list.song-item {
       background-color: #f0f0f0;
       padding: 10px;
       margin-bottom: 10px;
@@ -162,7 +162,7 @@
       justify-content: space-between;
     }
 
-   .song-list button {
+    .song-list button {
       background-color: red;
       border: none;
       color: white;
@@ -171,12 +171,12 @@
       cursor: pointer;
     }
 
-   .song-list button:hover {
+    .song-list button:hover {
       background-color: darkred;
     }
 
     /* 雨幕效果样式 */
-   .rain {
+    .rain {
       position: fixed;
       top: 0;
       left: 0;
@@ -186,7 +186,7 @@
       z-index: 99999;
     }
 
-   .drop {
+    .drop {
       position: absolute;
       width: 1px;
       height: 45px;
@@ -258,10 +258,84 @@
       background-color: darkred;
     }
 
-    /* 新添加的勾选后的样式 */
-   .completed {
-      text-decoration: line-through black;
+    /* 计时器样式 */
+    #timer-section {
+      margin-bottom: 30px;
+    }
+
+    #timer-name {
+      width: 70%;
+      padding: 8px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    #start-timer {
+      background-color: #ffffff33;
+      border: none;
       color: white;
+      padding: 8px 15px;
+      margin-left: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    #start-timer:hover {
+      background-color: #ffffff66;
+    }
+
+    #timer-display {
+      text-align: center;
+      font-size: 2em;
+      margin-top: 20px;
+    }
+
+    #timer-controls {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #timer-controls button {
+      background-color: #ffffff33;
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      margin: 0 5px;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background-color 0.3s;
+    }
+
+    #timer-controls button:hover {
+      background-color: #ffffff66;
+    }
+
+    #timer-list {
+      margin-top: 20px;
+    }
+
+    #timer-list li {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+    }
+
+    #timer-list li button {
+      background-color: red;
+      border: none;
+      color: white;
+      padding: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: auto;
+    }
+
+    #timer-list li button:hover {
+      background-color: darkred;
     }
   </style>
 </head>
@@ -275,7 +349,8 @@
       <div class="audio-player">
         <audio id="music-player" controls>
           <source id="music-source" src="" type="audio/mp3">
-          您的浏览器不支持音频标签。
+            您的浏览器不支持音频标签。
+          </source>
         </audio>
         <div>
           <label for="loop-control">循环模式：</label>
@@ -300,7 +375,8 @@
       <div class="audio-player">
         <audio id="noise-player" controls>
           <source id="noise-source" src="" type="audio/mp3">
-          您的浏览器不支持音频标签。
+            您的浏览器不支持音频标签。
+          </source>
         </audio>
         <div>
           <label for="noise-loop-control">循环模式：</label>
@@ -327,6 +403,20 @@
       <button id="add-todo" onclick="addTodo()">添加</button>
       <ul id="todo-list"></ul>
     </div>
+
+    <!-- 计时器模块 -->
+    <div class="section" id="timer-section">
+      <h2>⏱️ 计时器</h2>
+      <input type="text" id="timer-name" placeholder="输入项目名称">
+      <button id="start-timer" onclick="startTimer()">开始计时</button>
+      <div id="timer-display"></div>
+      <div id="timer-controls" style="display: none;">
+        <button id="pause-timer" onclick="pauseTimer()">暂停</button>
+        <button id="resume-timer" onclick="resumeTimer()" style="display: none;">继续</button>
+        <button id="stop-timer" onclick="stopTimer()">结束</button>
+      </div>
+      <ul id="timer-list"></ul>
+    </div>
   </div>
 
   <div class="popup-container" id="add-music-popup">
@@ -352,7 +442,13 @@
     let addMusicPopup = document.getElementById('add-music-popup');
     let fileInput = document.getElementById('file-input');
     let songListContainer = document.getElementById('song-list');
-    let currentPlayerType ='music';
+    let currentPlayerType = 'music';
+
+    let timerInterval;
+    let startTime;
+    let elapsedTime = 0;
+    let isPaused = false;
+    let timerName;
 
     window.onload = function () {
       loadSongs('music');
@@ -421,7 +517,9 @@
           const source = player.querySelector('source');
           source.src = songs[0].src;
           player.load();
-          player.play();
+          player.play().catch(error => {
+            console.log(`无法自动播放 ${playerType} 音乐:`, error);
+          });
 
           const selectElement = playerType ==='music'? songSelect : noiseSongSelect;
           selectElement.value = 0;
@@ -487,29 +585,128 @@
     function addMusic() {
       const file = fileInput.files[0];
       if (file) {
-        const name = file.name;
-        const src = URL.createObjectURL(file);
-        const song = { name, src };
-        const savedSongs = localStorage.getItem(currentPlayerType + 'Songs');
-        const songs = savedSongs? JSON.parse(savedSongs) : [];
-        songs.push(song);
-        localStorage.setItem(currentPlayerType + 'Songs', JSON.stringify(songs));
-        loadSongs(currentPlayerType);
-        closeAddMusicPopup();
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const song = {
+            name: file.name,
+            src: e.target.result
+          };
+          let savedSongs = localStorage.getItem(currentPlayerType + 'Songs');
+          let songs = savedSongs? JSON.parse(savedSongs) : [];
+          songs.push(song);
+          localStorage.setItem(currentPlayerType + 'Songs', JSON.stringify(songs));
+          loadSongs(currentPlayerType);
+          closeAddMusicPopup();
+        };
+        reader.readAsDataURL(file);
       }
     }
 
-    loopControl.onchange = function () {
-      // 改变播放行为在播放器 ended 事件中处理
-    }
-
-    noiseLoopControl.onchange = function () {
-      // 同上
-    }
-
-    // 待办事项功能函数
     function addTodo() {
       const todoInput = document.getElementById('todo-input');
       const todoText = todoInput.value.trim();
-      if (todoText!== '') {
-        const todos = JSON.parse(localStorage.getItem('todos') || '[]');
+      if (todoText) {
+        let todos = JSON.parse(localStorage.getItem('todos') || '[]');
+        todos.push(todoText);
+        localStorage.setItem('todos', JSON.stringify(todos));
+        loadTodos();
+        todoInput.value = '';
+      }
+    }
+
+    function loadTodos() {
+      const todoList = document.getElementById('todo-list');
+      let todos = JSON.parse(localStorage.getItem('todos') || '[]');
+      todoList.innerHTML = '';
+      todos.forEach((todo, index) => {
+        const li = document.createElement('li');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.onchange = function () {
+          if (this.checked) {
+            li.style.textDecoration = 'line-through';
+          } else {
+            li.style.textDecoration = 'none';
+          }
+        };
+        const span = document.createElement('span');
+        span.textContent = todo;
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = '删除';
+        deleteButton.onclick = function () {
+          todos.splice(index, 1);
+          localStorage.setItem('todos', JSON.stringify(todos));
+          loadTodos();
+        };
+        li.appendChild(checkbox);
+        li.appendChild(span);
+        li.appendChild(deleteButton);
+        todoList.appendChild(li);
+      });
+    }
+
+    function startTimer() {
+      timerName = document.getElementById('timer-name').value;
+      if (timerName) {
+        startTime = Date.now() - elapsedTime;
+        timerInterval = setInterval(updateTimer, 1000);
+        document.getElementById('timer-controls').style.display = 'block';
+        document.getElementById('start-timer').disabled = true;
+        document.getElementById('timer-name').disabled = true;
+      }
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      isPaused = true;
+      document.getElementById('pause-timer').style.display = 'none';
+      document.getElementById('resume-timer').style.display = 'inline-block';
+    }
+
+    function resumeTimer() {
+      startTime = Date.now() - elapsedTime;
+      timerInterval = setInterval(updateTimer, 1000);
+      isPaused = false;
+      document.getElementById('pause-timer').style.display = 'inline-block';
+      document.getElementById('resume-timer').style.display = 'none';
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+      const timerDisplay = document.getElementById('timer-display');
+      const timeRecord = timerDisplay.textContent;
+      const timerList = document.getElementById('timer-list');
+      const li = document.createElement('li');
+      li.textContent = `${timerName}: ${timeRecord}`;
+      const deleteButton = document.createElement('button');
+      deleteButton.textContent = '删除';
+      deleteButton.onclick = function () {
+        li.remove();
+      };
+      li.appendChild(deleteButton);
+      timerList.appendChild(li);
+
+      elapsedTime = 0;
+      timerDisplay.textContent = '00:00:00';
+      document.getElementById('timer-controls').style.display = 'none';
+      document.getElementById('start-timer').disabled = false;
+      document.getElementById('timer-name').disabled = false;
+      document.getElementById('timer-name').value = '';
+      document.getElementById('pause-timer').style.display = 'inline-block';
+      document.getElementById('resume-timer').style.display = 'none';
+    }
+
+    function updateTimer() {
+      const currentTime = Date.now();
+      elapsedTime = currentTime - startTime;
+      const hours = Math.floor(elapsedTime / 3600000);
+      const minutes = Math.floor((elapsedTime % 3600000) / 60000);
+      const seconds = Math.floor((elapsedTime % 60000) / 1000);
+      const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      document.getElementById('timer-display').textContent = formattedTime;
+    }
+  </script>
+</body>
+
+</html>
+    
