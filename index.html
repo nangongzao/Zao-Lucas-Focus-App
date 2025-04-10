@@ -243,5 +243,57 @@
       canvas.height = window.innerHeight;
     });
   </script>
+<canvas id="rain-canvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:999;pointer-events:none;"></canvas>
+<script>
+  const canvas = document.getElementById('rain-canvas');
+  const ctx = canvas.getContext('2d');
+  let width = canvas.width = window.innerWidth;
+  let height = canvas.height = window.innerHeight;
+
+  let rainDrops = [];
+  for (let i = 0; i < 500; i++) {
+    rainDrops.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      length: Math.random() * 20 + 10,
+      speed: Math.random() * 5 + 4
+    });
+  }
+
+  function drawRain() {
+    ctx.clearRect(0, 0, width, height);
+    ctx.strokeStyle = 'rgba(174,194,224,0.5)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let drop of rainDrops) {
+      ctx.moveTo(drop.x, drop.y);
+      ctx.lineTo(drop.x, drop.y + drop.length);
+    }
+    ctx.stroke();
+    moveRain();
+  }
+
+  function moveRain() {
+    for (let drop of rainDrops) {
+      drop.y += drop.speed;
+      if (drop.y > height) {
+        drop.y = -drop.length;
+        drop.x = Math.random() * width;
+      }
+    }
+  }
+
+  function loop() {
+    drawRain();
+    requestAnimationFrame(loop);
+  }
+
+  window.addEventListener('resize', () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  });
+
+  loop();
+</script>
 </body>
 </html>
