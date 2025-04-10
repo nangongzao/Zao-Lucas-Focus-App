@@ -195,7 +195,7 @@
 
     @keyframes fall {
       to {
-        transform: translateY(120vh); /* 让雨滴下落超出屏幕 */
+        transform: translateY(100vh);
       }
     }
   </style>
@@ -429,9 +429,9 @@
       const drop = document.createElement('div');
       drop.classList.add('drop');
       drop.style.left = Math.random() * 100 + '%';
-      drop.style.top = '-100vh'; // 将雨滴初始位置设置在屏幕上方很远的地方
+      drop.style.top = -Math.random() * 100 + '%'; // 随机设置雨滴初始位置在屏幕上方
       drop.style.animationDuration = Math.random() * 3 + 1 + 's';
-      drop.style.animationDelay = Math.random() * 10 + 's'; // 增加动画延迟时间
+      drop.style.animationDelay = Math.random() * 5 + 's'; // 调整动画延迟时间
       rain.appendChild(drop);
     }
   }
