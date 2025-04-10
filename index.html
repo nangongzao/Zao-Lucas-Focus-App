@@ -297,19 +297,21 @@
         const songs = JSON.parse(savedSongs);
         selectElement.innerHTML = '<option value="">请选择歌曲</option>';
 
-        songs.forEach((song, index) => {
-          const option = document.createElement('option');
-          option.value = index;
-          option.textContent = song.name;
-          selectElement.appendChild(option);
+songs.forEach((song, index) => {
+  const option = document.createElement('option');
+  option.value = index;
+  option.textContent = song.name;
+  selectElement.appendChild(option);
 
-          const songItem = document.createElement('div');
-          songItem.classList.add('song-item');
-          songItem.innerHTML = `${song.name} <button onclick="deleteSong(${index}, '${playerType}')">删除</button>`;
-          songList.appendChild(songItem);
-        });
-      }
-    }
+  const songItem = document.createElement('div');
+  songItem.classList.add('song-item');
+  songItem.innerHTML = `
+    ${song.name} 
+    <button onclick="deleteSong(${index}, '${playerType}')">删除</button>
+  `;
+  songList.appendChild(songItem);
+});
+
 
     // 删除歌曲
     function deleteSong(index, playerType) {
