@@ -289,32 +289,19 @@
       const songList = songListContainer;
       if (savedSongs) {
         const songs = JSON.parse(savedSongs);
-        selectElement.innerHTML = '<option value="">请选择歌曲</option>';
+        selectElement.innerHTML = '';
         songList.innerHTML = '';
-
         songs.forEach((song, index) => {
           const option = document.createElement('option');
-          option.value = index;
           option.textContent = song.name;
+          option.value = index;
           selectElement.appendChild(option);
 
           const songItem = document.createElement('div');
           songItem.classList.add('song-item');
-          songItem.innerHTML = ${song.name} <button onclick="deleteSong(${index}, '${playerType}')">删除</button>;
-          if (playerType === 'music') {
-            songList.appendChild(songItem);
-          }
+          songItem.innerHTML = `<span>${song.name}</span> <button onclick="deleteSong(${index}, '${playerType}')">删除</button>`;
+          songList.appendChild(songItem);
         });
-      }
-    }
-
-    function deleteSong(index, playerType) {
-      const savedSongs = localStorage.getItem(playerType + 'Songs');
-      if (savedSongs) {
-        let songs = JSON.parse(savedSongs);
-        songs.splice(index, 1);
-        localStorage.setItem(playerType + 'Songs', JSON.stringify(songs));
-        loadSongs(playerType);
       }
     }
 
@@ -329,98 +316,56 @@
 
     function addMusic() {
       const file = fileInput.files[0];
-      if (file) {
-        const name = file.name;
-        const src = URL.createObjectURL(file);
-        const song = { name, src };
-        const savedSongs = localStorage.getItem(currentPlayerType + 'Songs');
-        const songs = savedSongs ? JSON.parse(savedSongs) : [];
+      if (!file) return alert('请选择一个音频文件');
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const songs = JSON.parse(localStorage.getItem(currentPlayerType + 'Songs') || '[]');
+        const song = {
+          name: file.name,
+          src: e.target.result
+        };
         songs.push(song);
         localStorage.setItem(currentPlayerType + 'Songs', JSON.stringify(songs));
+
         loadSongs(currentPlayerType);
         closeAddMusicPopup();
-      }
+      };
+      reader.readAsDataURL(file);
     }
 
-    loopControl.onchange = function () {
-      musicPlayer.loop = loopControl.value !== 'none';
+    function deleteSong(index, playerType) {
+      const songs = JSON.parse(localStorage.getItem(playerType + 'Songs'));
+      songs.splice(index, 1);
+      localStorage.setItem(playerType + 'Songs', JSON.stringify(songs));
+
+      loadSongs(playerType);
     }
 
-    noiseLoopControl.onchange = function () {
-      noisePlayer.loop = noiseLoopControl.value !== 'none';
-    }
-
-    songSelect.onchange = function () {
-      const selectedSongIndex = songSelect.value;
-      if (selectedSongIndex !== '') {
-        const savedSongs = JSON.parse(localStorage.getItem('musicSongs'));
-        document.getElementById('music-source').src = savedSongs[selectedSongIndex].src;
-        musicPlayer.load();
-        musicPlayer.play();
-      }
-    }
-
-    noiseSongSelect.onchange = function () {
-      const selectedSongIndex = noiseSongSelect.value;
-      if (selectedSongIndex !== '') {
-        const savedSongs = JSON.parse(localStorage.getItem('noiseSongs'));
-        document.getElementById('noise-source').src = savedSongs[selectedSongIndex].src;
-        noisePlayer.load();
-        noisePlayer.play();
-      }
-    }
-  </script>
-<canvas id="rain-canvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:999;pointer-events:none;"></canvas>
-<script>
-  const canvas = document.getElementById('rain-canvas');
-  const ctx = canvas.getContext('2d');
-  let width = canvas.width = window.innerWidth;
-  let height = canvas.height = window.innerHeight;
-
-  let rainDrops = [];
-  for (let i = 0; i < 500; i++) {
-    rainDrops.push({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      length: Math.random() * 20 + 10,
-      speed: Math.random() * 5 + 4
+    songSelect.addEventListener('change', function (e) {
+      const index = e.target.value;
+      const savedSongs = JSON.parse(localStorage.getItem('musicSongs'));
+      const song = savedSongs[index];
+      musicPlayer.src = song.src;
+      musicPlayer.load();
+      musicPlayer.play();
     });
-  }
 
-  function drawRain() {
-    ctx.clearRect(0, 0, width, height);
-    ctx.strokeStyle = 'rgba(174,194,224,0.5)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    for (let drop of rainDrops) {
-      ctx.moveTo(drop.x, drop.y);
-      ctx.lineTo(drop.x, drop.y + drop.length);
-    }
-    ctx.stroke();
-    moveRain();
-  }
+    noiseSongSelect.addEventListener('change', function (e) {
+      const index = e.target.value;
+      const savedSongs = JSON.parse(localStorage.getItem('noiseSongs'));
+      const song = savedSongs[index];
+      noisePlayer.src = song.src;
+      noisePlayer.load();
+      noisePlayer.play();
+    });
 
-  function moveRain() {
-    for (let drop of rainDrops) {
-      drop.y += drop.speed;
-      if (drop.y > height) {
-        drop.y = -drop.length;
-        drop.x = Math.random() * width;
-      }
-    }
-  }
+    loopControl.addEventListener('change', function (e) {
+      musicPlayer.loop = e.target.value === 'loop';
+    });
 
-  function loop() {
-    drawRain();
-    requestAnimationFrame(loop);
-  }
-
-  window.addEventListener('resize', () => {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-  });
-
-  loop();
-</script>
+    noiseLoopControl.addEventListener('change', function (e) {
+      noisePlayer.loop = e.target.value === 'repeat';
+    });
+  </script>
 </body>
 </html>
