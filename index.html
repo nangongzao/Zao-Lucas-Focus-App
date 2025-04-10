@@ -188,14 +188,14 @@
     .drop {
       position: absolute;
       width: 1px;
-      height: 25px; /* 增加雨滴长度 */
-      background: rgba(255, 255, 255, 0.6); /* 调整雨滴透明度 */
+      height: 25px;
+      background: rgba(255, 255, 255, 0.6);
       animation: fall linear infinite;
     }
 
     @keyframes fall {
       to {
-        transform: translateY(100vh);
+        transform: translateY(120vh); /* 让雨滴下落超出屏幕 */
       }
     }
   </style>
@@ -429,8 +429,9 @@
       const drop = document.createElement('div');
       drop.classList.add('drop');
       drop.style.left = Math.random() * 100 + '%';
+      drop.style.top = '-100vh'; // 将雨滴初始位置设置在屏幕上方很远的地方
       drop.style.animationDuration = Math.random() * 3 + 1 + 's';
-      drop.style.animationDelay = Math.random() * 3 + 's';
+      drop.style.animationDelay = Math.random() * 10 + 's'; // 增加动画延迟时间
       rain.appendChild(drop);
     }
   }
