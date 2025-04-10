@@ -1,4 +1,272 @@
-<!-- 略去<head>部分不变 -->
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>枣和Lucas的专注世界</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-image: url('https://i.imgur.com/nk08jjo.jpeg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      font-family: Arial, sans-serif;
+      color: white;
+    }
+
+    .container {
+      background-color: rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      margin: 30px auto;
+      max-width: 800px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2em;
+      margin-bottom: 30px;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .section h2 {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+    }
+
+    .button {
+      background-color: #ffffff33;
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      margin-top: 10px;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background-color 0.3s;
+    }
+
+    .button:hover {
+      background-color: #ffffff66;
+    }
+
+    .item-list {
+      margin-top: 10px;
+    }
+
+    .item {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 166px;
+      border: none;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
+
+    .popup-container {
+      display: none;
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      width: 80%;
+      z-index: 9999;
+      color: black;
+      border: 1px solid silver;
+    }
+
+    .popup-container.show {
+      display: block;
+    }
+
+    .popup-container input[type="file"],
+    .popup-container input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .popup-container button {
+      background-color: #ffffff33;
+      border: none;
+      color: black;
+      padding: 10px 15px;
+      margin-top: 10px;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+
+    .popup-container button:hover {
+      background-color: #ffffff66;
+    }
+
+    .close-popup {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 20px;
+      cursor: pointer;
+      color: black;
+    }
+
+    .audio-player {
+      margin-bottom: 20px;
+    }
+
+    .audio-player audio {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    .audio-player select {
+      width: 100%;
+    }
+
+    .song-select {
+      margin-top: 10px;
+      width: 100%;
+      padding: 8px;
+      font-size: 1em;
+      border-radius: 5px;
+      border: none;
+    }
+
+    .song-list {
+      margin-top: 10px;
+    }
+
+    .song-list .song-item {
+      background-color: #f0f0f0;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .song-list button {
+      background-color: red;
+      border: none;
+      color: white;
+      padding: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .song-list button:hover {
+      background-color: darkred;
+    }
+
+    /* 雨幕效果样式 */
+    .rain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 99999;
+    }
+
+    .drop {
+      position: absolute;
+      width: 1px;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.3);
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(100vh);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>枣和Lucas的专注世界</h1>
+
+    <div class="section" id="music-section">
+      <h2>🎵 音乐播放器</h2>
+      <div class="audio-player">
+        <audio id="music-player" controls>
+          <source id="music-source" src="" type="audio/mp3">
+          您的浏览器不支持音频标签。
+        </audio>
+        <div>
+          <label for="loop-control">循环模式：</label>
+          <select id="loop-control">
+            <option value="none">无循环</option>
+            <option value="loop">循环播放</option>
+            <option value="repeat">重复播放</option>
+          </select>
+        </div>
+        <div>
+          <label for="song-select">选择歌曲：</label>
+          <select id="song-select" class="song-select">
+            <option value="">请选择歌曲</option>
+          </select>
+        </div>
+      </div>
+      <button class="button" onclick="openAddMusicPopup('music')">添加音乐</button>
+    </div>
+
+    <div class="section" id="noise-section">
+      <h2>🌙 白噪音播放器</h2>
+      <div class="audio-player">
+        <audio id="noise-player" controls>
+          <source id="noise-source" src="" type="audio/mp3">
+          您的浏览器不支持音频标签。
+        </audio>
+        <div>
+          <label for="noise-loop-control">循环模式：</label>
+          <select id="noise-loop-control">
+            <option value="none">无循环</option>
+            <option value="loop">循环播放</option>
+            <option value="repeat">重复播放</option>
+          </select>
+        </div>
+        <div>
+          <label for="noise-song-select">选择歌曲：</label>
+          <select id="noise-song-select" class="song-select">
+            <option value="">请选择白噪音</option>
+          </select>
+        </div>
+      </div>
+      <button class="button" onclick="openAddMusicPopup('noise')">添加白噪音</button>
+    </div>
+  </div>
+
+  <div class="popup-container" id="add-music-popup">
+    <div class="close-popup" onclick="closeAddMusicPopup()">X</div>
+    <h2>添加音乐</h2>
+    <input type="file" id="file-input" accept="audio/*">
+    <button class="button" onclick="addMusic()">添加</button>
+    <div class="song-list" id="song-list">
+      <h3>已添加的歌曲：</h3>
+    </div>
+  </div>
+
+  <!-- 雨幕元素 -->
+  <div class="rain" id="rain"></div>
 
 <script>
   let musicPlayer = document.getElementById('music-player');
@@ -33,6 +301,9 @@
     noisePlayer.addEventListener('ended', function () {
       handleLoop('noise');
     });
+
+    // 创建雨滴
+    createRain();
   }
 
   function handleLoop(playerType) {
@@ -149,4 +420,21 @@
   noiseLoopControl.onchange = function () {
     // 同上
   }
+
+  function createRain() {
+    const rain = document.getElementById('rain');
+    const numDrops = 300;
+
+    for (let i = 0; i < numDrops; i++) {
+      const drop = document.createElement('div');
+      drop.classList.add('drop');
+      drop.style.left = Math.random() * 100 + '%';
+      drop.style.animationDuration = Math.random() * 3 + 1 + 's';
+      drop.style.animationDelay = Math.random() * 3 + 's';
+      rain.appendChild(drop);
+    }
+  }
 </script>
+</body>
+</html>
+    
