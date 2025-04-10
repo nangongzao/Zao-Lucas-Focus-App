@@ -14,36 +14,8 @@
       background-attachment: fixed;
       font-family: Arial, sans-serif;
       color: white;
-      overflow: hidden; /* Prevent scrollbars */
     }
 
-    /* Rain effect */
-    .rain {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 999;
-      overflow: hidden;
-    }
-
-    .drop {
-      position: absolute;
-      background: rgba(255, 255, 255, 0.7);
-      width: 2px;
-      height: 10px;
-      animation: fall 1s infinite linear;
-    }
-
-    @keyframes fall {
-      to {
-        transform: translateY(100vh);
-      }
-    }
-
-    /* Original styles for the page */
     .container {
       background-color: rgba(0, 0, 0, 0.3);
       padding: 20px;
@@ -204,8 +176,6 @@
   </style>
 </head>
 <body>
-  <div class="rain" id="rain"></div> <!-- Rain effect container -->
-
   <div class="container">
     <h1>枣和Lucas的专注世界</h1>
 
@@ -294,18 +264,6 @@
 
       autoPlayFirstSong('music');
       autoPlayFirstSong('noise');
-      createRainEffect(); // Initialize the rain effect
-    }
-
-    function createRainEffect() {
-      const rainContainer = document.getElementById('rain');
-      for (let i = 0; i < 100; i++) {
-        const drop = document.createElement('div');
-        drop.classList.add('drop');
-        drop.style.left = `${Math.random() * 100}vw`;
-        drop.style.animationDuration = `${Math.random() * 1.5 + 0.5}s`;
-        rainContainer.appendChild(drop);
-      }
     }
 
     function autoPlayFirstSong(playerType) {
@@ -325,93 +283,92 @@
       }
     }
 
-    function
-function closeAddMusicPopup() {
-  addMusicPopup.classList.remove('show');
-}
+    function loadSongs(playerType) {
+      const savedSongs = localStorage.getItem(playerType + 'Songs');
+      const selectElement = playerType === 'music' ? songSelect : noiseSongSelect;
+      const songList = songListContainer;
+      if (savedSongs) {
+        const songs = JSON.parse(savedSongs);
+        selectElement.innerHTML = '<option value="">请选择歌曲</option>';
+        songList.innerHTML = '';
 
-function loadSongs(type) {
-  const selectElement = type === 'music' ? songSelect : noiseSongSelect;
-  selectElement.innerHTML = '<option value="">请选择歌曲</option>';
+        songs.forEach((song, index) => {
+          const option = document.createElement('option');
+          option.value = index;
+          option.textContent = song.name;
+          selectElement.appendChild(option);
 
-  const savedSongs = localStorage.getItem(type + 'Songs');
-  if (savedSongs) {
-    const songs = JSON.parse(savedSongs);
-    songs.forEach((song, index) => {
-      const option = document.createElement('option');
-      option.value = index;
-      option.textContent = song.name;
-      selectElement.appendChild(option);
-    });
-  }
-}
+          const songItem = document.createElement('div');
+          songItem.classList.add('song-item');
+          songItem.innerHTML = ${song.name} <button onclick="deleteSong(${index}, '${playerType}')">删除</button>;
+          if (playerType === 'music') {
+            songList.appendChild(songItem);
+          }
+        });
+      }
+    }
 
-function addMusic() {
-  const file = fileInput.files[0];
-  if (!file) return;
+    function deleteSong(index, playerType) {
+      const savedSongs = localStorage.getItem(playerType + 'Songs');
+      if (savedSongs) {
+        let songs = JSON.parse(savedSongs);
+        songs.splice(index, 1);
+        localStorage.setItem(playerType + 'Songs', JSON.stringify(songs));
+        loadSongs(playerType);
+      }
+    }
 
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    const savedSongs = localStorage.getItem(currentPlayerType + 'Songs');
-    let songs = savedSongs ? JSON.parse(savedSongs) : [];
+    function openAddMusicPopup(playerType) {
+      currentPlayerType = playerType;
+      addMusicPopup.classList.add('show');
+    }
 
-    const newSong = {
-      name: file.name,
-      src: e.target.result
-    };
+    function closeAddMusicPopup() {
+      addMusicPopup.classList.remove('show');
+    }
 
-    songs.push(newSong);
-    localStorage.setItem(currentPlayerType + 'Songs', JSON.stringify(songs));
+    function addMusic() {
+      const file = fileInput.files[0];
+      if (file) {
+        const name = file.name;
+        const src = URL.createObjectURL(file);
+        const song = { name, src };
+        const savedSongs = localStorage.getItem(currentPlayerType + 'Songs');
+        const songs = savedSongs ? JSON.parse(savedSongs) : [];
+        songs.push(song);
+        localStorage.setItem(currentPlayerType + 'Songs', JSON.stringify(songs));
+        loadSongs(currentPlayerType);
+        closeAddMusicPopup();
+      }
+    }
 
-    loadSongs(currentPlayerType);
-    loadSongList(currentPlayerType);
-    fileInput.value = '';
-  };
+    loopControl.onchange = function () {
+      musicPlayer.loop = loopControl.value !== 'none';
+    }
 
-  reader.readAsDataURL(file);
-}
+    noiseLoopControl.onchange = function () {
+      noisePlayer.loop = noiseLoopControl.value !== 'none';
+    }
 
-function deleteSong(index) {
-  let songs = JSON.parse(localStorage.getItem(currentPlayerType + 'Songs'));
-  songs.splice(index, 1);
-  localStorage.setItem(currentPlayerType + 'Songs', JSON.stringify(songs));
-  loadSongs(currentPlayerType);
-  loadSongList(currentPlayerType);
-}
+    songSelect.onchange = function () {
+      const selectedSongIndex = songSelect.value;
+      if (selectedSongIndex !== '') {
+        const savedSongs = JSON.parse(localStorage.getItem('musicSongs'));
+        document.getElementById('music-source').src = savedSongs[selectedSongIndex].src;
+        musicPlayer.load();
+        musicPlayer.play();
+      }
+    }
 
-function loadSongList(type) {
-  let songs = JSON.parse(localStorage.getItem(type + 'Songs') || '[]');
-  songListContainer.innerHTML = '<h3>已添加的歌曲：</h3>';
-  songs.forEach((song, index) => {
-    let div = document.createElement('div');
-    div.className = 'song-item';
-    div.innerHTML = `<span>${song.name}</span><button onclick="deleteSong(${index})">删除</button>`;
-    songListContainer.appendChild(div);
-  });
-}
-
-songSelect.addEventListener('change', function () {
-  let songs = JSON.parse(localStorage.getItem('musicSongs'));
-  let selected = this.value;
-  if (songs[selected]) {
-    musicPlayer.src = songs[selected].src;
-    musicPlayer.play();
-  }
-});
-
-noiseSongSelect.addEventListener('change', function () {
-  let songs = JSON.parse(localStorage.getItem('noiseSongs'));
-  let selected = this.value;
-  if (songs[selected]) {
-    noisePlayer.src = songs[selected].src;
-    noisePlayer.play();
-  }
-});
-
-loopControl.addEventListener('change', function () {
-  musicPlayer.loop = this.value !== 'none';
-});
-
-noiseLoopControl.addEventListener('change', function () {
-  noisePlayer.loop = this.value !== 'none';
-});
+    noiseSongSelect.onchange = function () {
+      const selectedSongIndex = noiseSongSelect.value;
+      if (selectedSongIndex !== '') {
+        const savedSongs = JSON.parse(localStorage.getItem('noiseSongs'));
+        document.getElementById('noise-source').src = savedSongs[selectedSongIndex].src;
+        noisePlayer.load();
+        noisePlayer.play();
+      }
+    }
+  </script>
+</body>
+</html>
