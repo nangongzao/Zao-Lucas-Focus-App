@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +17,7 @@
       color: white;
     }
 
-    .container {
+   .container {
       background-color: rgba(0, 0, 0, 0.3);
       padding: 20px;
       margin: 30px auto;
@@ -31,16 +32,16 @@
       margin-bottom: 30px;
     }
 
-    .section {
+   .section {
       margin-bottom: 30px;
     }
 
-    .section h2 {
+   .section h2 {
       font-size: 1.5em;
       margin-bottom: 10px;
     }
 
-    .button {
+   .button {
       background-color: #ffffff33;
       border: none;
       color: white;
@@ -51,15 +52,15 @@
       transition: background-color 0.3s;
     }
 
-    .button:hover {
+   .button:hover {
       background-color: #ffffff66;
     }
 
-    .item-list {
+   .item-list {
       margin-top: 10px;
     }
 
-    .item {
+   .item {
       background-color: rgba(255, 255, 255, 0.1);
       padding: 10px;
       margin-bottom: 10px;
@@ -74,7 +75,7 @@
       margin-bottom: 15px;
     }
 
-    .popup-container {
+   .popup-container {
       display: none;
       position: fixed;
       top: 20%;
@@ -90,12 +91,12 @@
       border: 1px solid silver;
     }
 
-    .popup-container.show {
+   .popup-container.show {
       display: block;
     }
 
-    .popup-container input[type="file"],
-    .popup-container input[type="text"] {
+   .popup-container input[type="file"],
+   .popup-container input[type="text"] {
       width: 100%;
       padding: 8px;
       margin-top: 5px;
@@ -103,7 +104,7 @@
       border: 1px solid #ccc;
     }
 
-    .popup-container button {
+   .popup-container button {
       background-color: #ffffff33;
       border: none;
       color: black;
@@ -113,11 +114,11 @@
       border-radius: 10px;
     }
 
-    .popup-container button:hover {
+   .popup-container button:hover {
       background-color: #ffffff66;
     }
 
-    .close-popup {
+   .close-popup {
       position: absolute;
       top: 10px;
       right: 10px;
@@ -126,20 +127,20 @@
       color: black;
     }
 
-    .audio-player {
+   .audio-player {
       margin-bottom: 20px;
     }
 
-    .audio-player audio {
+   .audio-player audio {
       width: 100%;
       border-radius: 10px;
     }
 
-    .audio-player select {
+   .audio-player select {
       width: 100%;
     }
 
-    .song-select {
+   .song-select {
       margin-top: 10px;
       width: 100%;
       padding: 8px;
@@ -148,11 +149,11 @@
       border: none;
     }
 
-    .song-list {
+   .song-list {
       margin-top: 10px;
     }
 
-    .song-list .song-item {
+   .song-list.song-item {
       background-color: #f0f0f0;
       padding: 10px;
       margin-bottom: 10px;
@@ -161,7 +162,7 @@
       justify-content: space-between;
     }
 
-    .song-list button {
+   .song-list button {
       background-color: red;
       border: none;
       color: white;
@@ -170,12 +171,12 @@
       cursor: pointer;
     }
 
-    .song-list button:hover {
+   .song-list button:hover {
       background-color: darkred;
     }
 
     /* 雨幕效果样式 */
-    .rain {
+   .rain {
       position: fixed;
       top: 0;
       left: 0;
@@ -185,11 +186,11 @@
       z-index: 99999;
     }
 
-    .drop {
+   .drop {
       position: absolute;
       width: 1px;
-      height: 25px;
-      background: rgba(255, 255, 255, 0.6);
+      height: 45px;
+      background: rgba(255, 255, 255, 0.54);
       animation: fall linear infinite;
     }
 
@@ -198,8 +199,73 @@
         transform: translateY(100vh);
       }
     }
+
+    /* 待办事项样式 */
+    #todo-section {
+      margin-bottom: 30px;
+    }
+
+    #todo-input {
+      width: 70%;
+      padding: 8px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    #add-todo {
+      background-color: #ffffff33;
+      border: none;
+      color: white;
+      padding: 8px 15px;
+      margin-left: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    #add-todo:hover {
+      background-color: #ffffff66;
+    }
+
+    #todo-list {
+      margin-top: 10px;
+    }
+
+    #todo-list li {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+    }
+
+    #todo-list li input[type="checkbox"] {
+      margin-right: 10px;
+    }
+
+    #todo-list li button {
+      background-color: red;
+      border: none;
+      color: white;
+      padding: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: auto;
+    }
+
+    #todo-list li button:hover {
+      background-color: darkred;
+    }
+
+    /* 新添加的勾选后的样式 */
+   .completed {
+      text-decoration: line-through black;
+      color: white;
+    }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h1>枣和Lucas的专注世界</h1>
@@ -253,6 +319,14 @@
       </div>
       <button class="button" onclick="openAddMusicPopup('noise')">添加白噪音</button>
     </div>
+
+    <!-- 待办事项模块 -->
+    <div class="section" id="todo-section">
+      <h2>📋 待办事项</h2>
+      <input type="text" id="todo-input" placeholder="输入待办事项">
+      <button id="add-todo" onclick="addTodo()">添加</button>
+      <ul id="todo-list"></ul>
+    </div>
   </div>
 
   <div class="popup-container" id="add-music-popup">
@@ -268,174 +342,174 @@
   <!-- 雨幕元素 -->
   <div class="rain" id="rain"></div>
 
-<script>
-  let musicPlayer = document.getElementById('music-player');
-  let noisePlayer = document.getElementById('noise-player');
-  let loopControl = document.getElementById('loop-control');
-  let songSelect = document.getElementById('song-select');
-  let noiseLoopControl = document.getElementById('noise-loop-control');
-  let noiseSongSelect = document.getElementById('noise-song-select');
-  let addMusicPopup = document.getElementById('add-music-popup');
-  let fileInput = document.getElementById('file-input');
-  let songListContainer = document.getElementById('song-list');
-  let currentPlayerType = 'music';
+  <script>
+    let musicPlayer = document.getElementById('music-player');
+    let noisePlayer = document.getElementById('noise-player');
+    let loopControl = document.getElementById('loop-control');
+    let songSelect = document.getElementById('song-select');
+    let noiseLoopControl = document.getElementById('noise-loop-control');
+    let noiseSongSelect = document.getElementById('noise-song-select');
+    let addMusicPopup = document.getElementById('add-music-popup');
+    let fileInput = document.getElementById('file-input');
+    let songListContainer = document.getElementById('song-list');
+    let currentPlayerType ='music';
 
-  window.onload = function () {
-    loadSongs('music');
-    loadSongs('noise');
+    window.onload = function () {
+      loadSongs('music');
+      loadSongs('noise');
 
-    musicPlayer.volume = 0.4;
-    noisePlayer.volume = 0.6;
+      musicPlayer.volume = 0.4;
+      noisePlayer.volume = 0.6;
 
-    loopControl.value = 'loop';
-    noiseLoopControl.value = 'repeat';
+      loopControl.value = 'loop';
+      noiseLoopControl.value ='repeat';
 
-    autoPlayFirstSong('music');
-    autoPlayFirstSong('noise');
+      autoPlayFirstSong('music');
+      autoPlayFirstSong('noise');
 
-    // 监听播放结束
-    musicPlayer.addEventListener('ended', function () {
-      handleLoop('music');
-    });
-
-    noisePlayer.addEventListener('ended', function () {
-      handleLoop('noise');
-    });
-
-    // 创建雨滴
-    createRain();
-  }
-
-  function handleLoop(playerType) {
-    const control = playerType === 'music' ? loopControl : noiseLoopControl;
-    const player = playerType === 'music' ? musicPlayer : noisePlayer;
-    const select = playerType === 'music' ? songSelect : noiseSongSelect;
-    const songs = JSON.parse(localStorage.getItem(playerType + 'Songs') || '[]');
-    let index = parseInt(select.value);
-
-    if (control.value === 'repeat') {
-      player.currentTime = 0;
-      player.play();
-    } else if (control.value === 'loop') {
-      index = (index + 1) % songs.length;
-      select.value = index;
-      const source = player.querySelector('source');
-      source.src = songs[index].src;
-      player.load();
-      player.play();
-    }
-  }
-
-  function autoPlayFirstSong(playerType) {
-    const savedSongs = localStorage.getItem(playerType + 'Songs');
-    if (savedSongs) {
-      const songs = JSON.parse(savedSongs);
-      if (songs.length > 0) {
-        const player = playerType === 'music' ? musicPlayer : noisePlayer;
-        const source = player.querySelector('source');
-        source.src = songs[0].src;
-        player.load();
-        player.play();
-
-        const selectElement = playerType === 'music' ? songSelect : noiseSongSelect;
-        selectElement.value = 0;
-      }
-    }
-  }
-
-  function loadSongs(playerType) {
-    const savedSongs = localStorage.getItem(playerType + 'Songs');
-    const selectElement = playerType === 'music' ? songSelect : noiseSongSelect;
-    const songList = songListContainer;
-    if (savedSongs) {
-      const songs = JSON.parse(savedSongs);
-      selectElement.innerHTML = '<option value="">请选择歌曲</option>';
-      if (playerType === 'music') songList.innerHTML = '';
-
-      songs.forEach((song, index) => {
-        const option = document.createElement('option');
-        option.value = index;
-        option.textContent = song.name;
-        selectElement.appendChild(option);
-
-        if (playerType === 'music') {
-          const songItem = document.createElement('div');
-          songItem.classList.add('song-item');
-          songItem.innerHTML = `${song.name} <button onclick="deleteSong(${index}, '${playerType}')">删除</button>`;
-          songList.appendChild(songItem);
-        }
+      // 监听播放结束
+      musicPlayer.addEventListener('ended', function () {
+        handleLoop('music');
       });
 
-      selectElement.onchange = function () {
-        const index = parseInt(this.value);
-        if (!isNaN(index)) {
-          const player = playerType === 'music' ? musicPlayer : noisePlayer;
+      noisePlayer.addEventListener('ended', function () {
+        handleLoop('noise');
+      });
+
+      // 创建雨滴
+      const rain = document.getElementById('rain');
+      const numDrops = 300;
+      for (let i = 0; i < numDrops; i++) {
+        const drop = document.createElement('div');
+        drop.classList.add('drop');
+        drop.style.left = Math.random() * 100 + '%';
+        drop.style.animationDuration = Math.random() * 3 + 1 +'s';
+        drop.style.animationDelay = Math.random() * 3 +'s';
+        rain.appendChild(drop);
+      }
+
+      // 加载待办事项
+      loadTodos();
+    }
+
+    function handleLoop(playerType) {
+      const control = playerType ==='music'? loopControl : noiseLoopControl;
+      const player = playerType ==='music'? musicPlayer : noisePlayer;
+      const select = playerType ==='music'? songSelect : noiseSongSelect;
+      const songs = JSON.parse(localStorage.getItem(playerType + 'Songs') || '[]');
+      let index = parseInt(select.value);
+
+      if (control.value ==='repeat') {
+        player.currentTime = 0;
+        player.play();
+      } else if (control.value === 'loop') {
+        index = (index + 1) % songs.length;
+        select.value = index;
+        const source = player.querySelector('source');
+        source.src = songs[index].src;
+        player.load();
+        player.play();
+      }
+    }
+
+    function autoPlayFirstSong(playerType) {
+      const savedSongs = localStorage.getItem(playerType + 'Songs');
+      if (savedSongs) {
+        const songs = JSON.parse(savedSongs);
+        if (songs.length > 0) {
+          const player = playerType ==='music'? musicPlayer : noisePlayer;
           const source = player.querySelector('source');
-          source.src = songs[index].src;
+          source.src = songs[0].src;
           player.load();
           player.play();
+
+          const selectElement = playerType ==='music'? songSelect : noiseSongSelect;
+          selectElement.value = 0;
         }
-      };
+      }
     }
-  }
 
-  function deleteSong(index, playerType) {
-    const savedSongs = localStorage.getItem(playerType + 'Songs');
-    if (savedSongs) {
-      let songs = JSON.parse(savedSongs);
-      songs.splice(index, 1);
-      localStorage.setItem(playerType + 'Songs', JSON.stringify(songs));
-      loadSongs(playerType);
+    function loadSongs(playerType) {
+      const savedSongs = localStorage.getItem(playerType + 'Songs');
+      const selectElement = playerType ==='music'? songSelect : noiseSongSelect;
+      const songList = songListContainer;
+      if (savedSongs) {
+        const songs = JSON.parse(savedSongs);
+        selectElement.innerHTML = '<option value="">请选择歌曲</option>';
+        if (playerType ==='music') songList.innerHTML = '';
+
+        songs.forEach((song, index) => {
+          const option = document.createElement('option');
+          option.value = index;
+          option.textContent = song.name;
+          selectElement.appendChild(option);
+
+          if (playerType ==='music') {
+            const songItem = document.createElement('div');
+            songItem.classList.add('song-item');
+            songItem.innerHTML = `${song.name} <button onclick="deleteSong(${index}, '${playerType}')">删除</button>`;
+            songList.appendChild(songItem);
+          }
+        });
+
+        selectElement.onchange = function () {
+          const index = parseInt(this.value);
+          if (!isNaN(index)) {
+            const player = playerType ==='music'? musicPlayer : noisePlayer;
+            const source = player.querySelector('source');
+            source.src = songs[index].src;
+            player.load();
+            player.play();
+          }
+        };
+      }
     }
-  }
 
-  function openAddMusicPopup(playerType) {
-    currentPlayerType = playerType;
-    addMusicPopup.classList.add('show');
-  }
-
-  function closeAddMusicPopup() {
-    addMusicPopup.classList.remove('show');
-  }
-
-  function addMusic() {
-    const file = fileInput.files[0];
-    if (file) {
-      const name = file.name;
-      const src = URL.createObjectURL(file);
-      const song = { name, src };
-      const savedSongs = localStorage.getItem(currentPlayerType + 'Songs');
-      const songs = savedSongs ? JSON.parse(savedSongs) : [];
-      songs.push(song);
-      localStorage.setItem(currentPlayerType + 'Songs', JSON.stringify(songs));
-      loadSongs(currentPlayerType);
-      closeAddMusicPopup();
+    function deleteSong(index, playerType) {
+      const savedSongs = localStorage.getItem(playerType + 'Songs');
+      if (savedSongs) {
+        let songs = JSON.parse(savedSongs);
+        songs.splice(index, 1);
+        localStorage.setItem(playerType + 'Songs', JSON.stringify(songs));
+        loadSongs(playerType);
+      }
     }
-  }
 
-  loopControl.onchange = function () {
-    // 改变播放行为在播放器 ended 事件中处理
-  }
-
-  noiseLoopControl.onchange = function () {
-    // 同上
-  }
-
-  function createRain() {
-    const rain = document.getElementById('rain');
-    const numDrops = 300;
-
-    for (let i = 0; i < numDrops; i++) {
-      const drop = document.createElement('div');
-      drop.classList.add('drop');
-      drop.style.left = Math.random() * 100 + '%';
-      drop.style.top = -Math.random() * 100 + '%'; // 随机设置雨滴初始位置在屏幕上方
-      drop.style.animationDuration = Math.random() * 3 + 1 + 's';
-      drop.style.animationDelay = Math.random() * 5 + 's'; // 调整动画延迟时间
-      rain.appendChild(drop);
+    function openAddMusicPopup(playerType) {
+      currentPlayerType = playerType;
+      addMusicPopup.classList.add('show');
     }
-  }
-</script>
-</body>
-</html>
-    
+
+    function closeAddMusicPopup() {
+      addMusicPopup.classList.remove('show');
+    }
+
+    function addMusic() {
+      const file = fileInput.files[0];
+      if (file) {
+        const name = file.name;
+        const src = URL.createObjectURL(file);
+        const song = { name, src };
+        const savedSongs = localStorage.getItem(currentPlayerType + 'Songs');
+        const songs = savedSongs? JSON.parse(savedSongs) : [];
+        songs.push(song);
+        localStorage.setItem(currentPlayerType + 'Songs', JSON.stringify(songs));
+        loadSongs(currentPlayerType);
+        closeAddMusicPopup();
+      }
+    }
+
+    loopControl.onchange = function () {
+      // 改变播放行为在播放器 ended 事件中处理
+    }
+
+    noiseLoopControl.onchange = function () {
+      // 同上
+    }
+
+    // 待办事项功能函数
+    function addTodo() {
+      const todoInput = document.getElementById('todo-input');
+      const todoText = todoInput.value.trim();
+      if (todoText!== '') {
+        const todos = JSON.parse(localStorage.getItem('todos') || '[]');
