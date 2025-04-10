@@ -153,7 +153,7 @@
       margin-top: 10px;
     }
 
-    .song-list.song-item {
+    .song-list .song-item {
       background-color: #f0f0f0;
       padding: 10px;
       margin-bottom: 10px;
@@ -349,8 +349,7 @@
       <div class="audio-player">
         <audio id="music-player" controls>
           <source id="music-source" src="" type="audio/mp3">
-            您的浏览器不支持音频标签。
-          </source>
+          您的浏览器不支持音频标签。
         </audio>
         <div>
           <label for="loop-control">循环模式：</label>
@@ -375,8 +374,7 @@
       <div class="audio-player">
         <audio id="noise-player" controls>
           <source id="noise-source" src="" type="audio/mp3">
-            您的浏览器不支持音频标签。
-          </source>
+          您的浏览器不支持音频标签。
         </audio>
         <div>
           <label for="noise-loop-control">循环模式：</label>
@@ -417,8 +415,6 @@
       </div>
       <ul id="timer-list"></ul>
     </div>
-
-    <button id="play-all-audio" class="button" onclick="playAllAudio()">播放所有音频</button>
   </div>
 
   <div class="popup-container" id="add-music-popup">
@@ -452,19 +448,6 @@
     let isPaused = false;
     let timerName;
 
-    // 模拟歌曲数据
-    const mockMusicSongs = [
-      { name: 'Mock Music 1', src: 'https://example.com/mock-music-1.mp3' },
-      { name: 'Mock Music 2', src: 'https://example.com/mock-music-2.mp3' }
-    ];
-    localStorage.setItem('musicSongs', JSON.stringify(mockMusicSongs));
-
-    const mockNoiseSongs = [
-      { name: 'Mock Noise 1', src: 'https://example.com/mock-noise-1.mp3' },
-      { name: 'Mock Noise 2', src: 'https://example.com/mock-noise-2.mp3' }
-    ];
-    localStorage.setItem('noiseSongs', JSON.stringify(mockNoiseSongs));
-
     window.onload = function () {
       loadSongs('music');
       loadSongs('noise');
@@ -473,11 +456,10 @@
       noisePlayer.volume = 0.6;
 
       loopControl.value = 'loop';
-      noiseLoopControl.value ='repeat';
+      noiseLoopControl.value = 'repeat';
 
-      // 移除自动播放逻辑
-      // autoPlayFirstSong('music');
-      // autoPlayFirstSong('noise');
+      autoPlayFirstSong('music');
+      autoPlayFirstSong('noise');
 
       // 监听播放结束
       musicPlayer.addEventListener('ended', function () {
@@ -495,8 +477,8 @@
         const drop = document.createElement('div');
         drop.classList.add('drop');
         drop.style.left = Math.random() * 100 + '%';
-        drop.style.animationDuration = Math.random() * 3 + 1 +'s';
-        drop.style.animationDelay = Math.random() * 3 +'s';
+        drop.style.animationDuration = Math.random() * 3 + 1 + 's';
+        drop.style.animationDelay = Math.random() * 3 + 's';
         rain.appendChild(drop);
       }
 
@@ -505,13 +487,13 @@
     }
 
     function handleLoop(playerType) {
-      const control = playerType ==='music'? loopControl : noiseLoopControl;
-      const player = playerType ==='music'? musicPlayer : noisePlayer;
-      const select = playerType ==='music'? songSelect : noiseSongSelect;
+      const control = playerType === 'music' ? loopControl : noiseLoopControl;
+      const player = playerType === 'music' ? musicPlayer : noisePlayer;
+      const select = playerType === 'music' ? songSelect : noiseSongSelect;
       const songs = JSON.parse(localStorage.getItem(playerType + 'Songs') || '[]');
       let index = parseInt(select.value);
 
-      if (control.value ==='repeat') {
+      if (control.value === 'repeat') {
         player.currentTime = 0;
         player.play();
       } else if (control.value === 'loop') {
@@ -524,23 +506,31 @@
       }
     }
 
-    function playAllAudio() {
-      musicPlayer.play().catch(error => {
-        console.log('无法播放音乐:', error);
-      });
-      noisePlayer.play().catch(error => {
-        console.log('无法播放白噪音:', error);
-      });
+    function autoPlayFirstSong(playerType) {
+      const savedSongs = localStorage.getItem(playerType + 'Songs');
+      if (savedSongs) {
+        const songs = JSON.parse(savedSongs);
+        if (songs.length > 0) {
+          const player = playerType === 'music' ? musicPlayer : noisePlayer;
+          const source = player.querySelector('source');
+          source.src = songs[0].src;
+          player.load();
+          player.play();
+
+          const selectElement = playerType === 'music' ? songSelect : noiseSongSelect;
+          selectElement.value = 0;
+        }
+      }
     }
 
     function loadSongs(playerType) {
       const savedSongs = localStorage.getItem(playerType + 'Songs');
-      const selectElement = playerType ==='music'? songSelect : noiseSongSelect;
+      const selectElement = playerType === 'music' ? songSelect : noiseSongSelect;
       const songList = songListContainer;
       if (savedSongs) {
         const songs = JSON.parse(savedSongs);
         selectElement.innerHTML = '<option value="">请选择歌曲</option>';
-        if (playerType ==='music') songList.innerHTML = '';
+        if (playerType === 'music') songList.innerHTML = '';
 
         songs.forEach((song, index) => {
           const option = document.createElement('option');
@@ -548,7 +538,7 @@
           option.textContent = song.name;
           selectElement.appendChild(option);
 
-          if (playerType ==='music') {
+          if (playerType === 'music') {
             const songItem = document.createElement('div');
             songItem.classList.add('song-item');
             songItem.innerHTML = `${song.name} <button onclick="deleteSong(${index}, '${playerType}')">删除</button>`;
@@ -559,7 +549,7 @@
         selectElement.onchange = function () {
           const index = parseInt(this.value);
           if (!isNaN(index)) {
-            const player = playerType ==='music'? musicPlayer : noisePlayer;
+            const player = playerType === 'music' ? musicPlayer : noisePlayer;
             const source = player.querySelector('source');
             source.src = songs[index].src;
             player.load();
@@ -591,21 +581,24 @@
     function addMusic() {
       const file = fileInput.files[0];
       if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const song = {
-            name: file.name,
-            src: e.target.result
-          };
-          let savedSongs = localStorage.getItem(currentPlayerType + 'Songs');
-          let songs = savedSongs? JSON.parse(savedSongs) : [];
-          songs.push(song);
-          localStorage.setItem(currentPlayerType + 'Songs', JSON.stringify(songs));
-          loadSongs(currentPlayerType);
-          closeAddMusicPopup();
-        };
-        reader.readAsDataURL(file);
+        const name = file.name;
+        const src = URL.createObjectURL(file);
+        const song = { name, src };
+        const savedSongs = localStorage.getItem(currentPlayerType + 'Songs');
+        const songs = savedSongs? JSON.parse(savedSongs) : [];
+        songs.push(song);
+        localStorage.setItem(currentPlayerType + 'Songs', JSON.stringify(songs));
+        loadSongs(currentPlayerType);
+        closeAddMusicPopup();
       }
+    }
+
+    loopControl.onchange = function () {
+      // 改变播放行为在播放器 ended 事件中处理
+    }
+
+    noiseLoopControl.onchange = function () {
+      // 同上
     }
 
     function addTodo() {
