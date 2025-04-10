@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>枣和Lucas的专注小屋</title>
+  <title>枣和Lucas的专注世界</title>
   <style>
     body {
       margin: 0;
@@ -417,6 +417,8 @@
       </div>
       <ul id="timer-list"></ul>
     </div>
+
+    <button id="play-all-audio" class="button" onclick="playAllAudio()">播放所有音频</button>
   </div>
 
   <div class="popup-container" id="add-music-popup">
@@ -450,6 +452,19 @@
     let isPaused = false;
     let timerName;
 
+    // 模拟歌曲数据
+    const mockMusicSongs = [
+      { name: 'Mock Music 1', src: 'https://example.com/mock-music-1.mp3' },
+      { name: 'Mock Music 2', src: 'https://example.com/mock-music-2.mp3' }
+    ];
+    localStorage.setItem('musicSongs', JSON.stringify(mockMusicSongs));
+
+    const mockNoiseSongs = [
+      { name: 'Mock Noise 1', src: 'https://example.com/mock-noise-1.mp3' },
+      { name: 'Mock Noise 2', src: 'https://example.com/mock-noise-2.mp3' }
+    ];
+    localStorage.setItem('noiseSongs', JSON.stringify(mockNoiseSongs));
+
     window.onload = function () {
       loadSongs('music');
       loadSongs('noise');
@@ -460,8 +475,9 @@
       loopControl.value = 'loop';
       noiseLoopControl.value ='repeat';
 
-      autoPlayFirstSong('music');
-      autoPlayFirstSong('noise');
+      // 移除自动播放逻辑
+      // autoPlayFirstSong('music');
+      // autoPlayFirstSong('noise');
 
       // 监听播放结束
       musicPlayer.addEventListener('ended', function () {
@@ -508,23 +524,13 @@
       }
     }
 
-    function autoPlayFirstSong(playerType) {
-      const savedSongs = localStorage.getItem(playerType + 'Songs');
-      if (savedSongs) {
-        const songs = JSON.parse(savedSongs);
-        if (songs.length > 0) {
-          const player = playerType ==='music'? musicPlayer : noisePlayer;
-          const source = player.querySelector('source');
-          source.src = songs[0].src;
-          player.load();
-          player.play().catch(error => {
-            console.log(`无法自动播放 ${playerType} 音乐:`, error);
-          });
-
-          const selectElement = playerType ==='music'? songSelect : noiseSongSelect;
-          selectElement.value = 0;
-        }
-      }
+    function playAllAudio() {
+      musicPlayer.play().catch(error => {
+        console.log('无法播放音乐:', error);
+      });
+      noisePlayer.play().catch(error => {
+        console.log('无法播放白噪音:', error);
+      });
     }
 
     function loadSongs(playerType) {
